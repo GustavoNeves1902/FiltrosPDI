@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <h1 class="titulo">Escolha sua imagem e aplique um filtro</h1>
+
+    <nav>
+        <button id="limiarizacao">Limiarização</button>
+        <button id="Otsu">Otsu</button>
+        <button id="CrescDeRegiões">Cresc. de regiões</button>
+        <button id="escalaDeCinza">Escala de Cinza</button>
+        <button id="passaAltaBasico">Passa-alta básico</button>
+        <button id="passaAltaAltoReforco">Passa-alta alto reforço</button>
+        <button id="passaBaixaMedia">Passa-baixa média</button>
+        <button id="passaAltaMediana">Passa-alta mediana</button>
+        <button id="Gaussiano">Gaussiano</button>
+        <button id="PassaBaixaMin">Passa-baixa Min</button>
+        <button id="PassaBaixaMax">Passa-baixa Max</button>
+        <button id="roberts">Roberts</button>
+        <button id="prewitt">Prewitt</button>
+        <button id="sobel">Sobel</button>
+        <button id="transformacaoLogaritmica">Transformação Logaritmica</button>
+        <button id="operacoesAritmeticas">Operações aritméticas</button>
+        <button id="Negativo">Negativo</button>
+        <button id="histograma">Histograma</button>
+        <button id="equalizacaoDeHistograma">Equalização de Histograma</button>
+    </nav>
+        
+    <main class="main-content">
+        <div class="input-section">
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+        
+        <!-- Controles dinâmicos dos filtros -->
+        <div id="filter-controls" style="display: none; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; background-color: #ddd; padding: 15px; border-radius: 10px; width: fit-content; margin-left: auto; margin-right: auto;">
+            
+            <div id="limiar-controls" style="display: none; align-items: center; gap: 10px;">
+                <label for="thresholdRange" style="font-weight: bold; color: #333;">Valor do Limiar: <span id="thresholdValue">127</span></label>
+                <input type="range" id="thresholdRange" min="0" max="255" value="127" style="cursor: pointer; width: 200px;">
+            </div>
+
+            <div id="arithmetic-controls" style="display: none; align-items: center; gap: 10px;">
+                <label for="arithmeticRange" style="font-weight: bold; color: #333;">Ajuste (Brilho): <span id="arithmeticValue">0</span></label>
+                <input type="range" id="arithmeticRange" min="-255" max="255" value="0" style="cursor: pointer; width: 200px;">
+            </div>
+
+            <div id="highboost-controls" style="display: none; align-items: center; gap: 10px;">
+                <label for="highboostRange" style="font-weight: bold; color: #333;">Fator 'A' Alto Reforço: <span id="highboostValue">1.0</span></label>
+                <input type="range" id="highboostRange" min="1.0" max="5.0" step="0.1" value="1.0" style="cursor: pointer; width: 200px;">
+            </div>
+            
+        </div>
+
+        <div class="image-container">
+            <div class="canvas-wrapper">
+                <h3>Original</h3>
+                <canvas id="originalCanvas"></canvas>
+                <div class="histogram-wrapper" id="hw-orig" style="display: none; margin-top: 15px;">
+                    <canvas id="histogramOrig" width="256" height="150" style="background:#fff; border:1px solid #ccc;"></canvas>
+                </div>
+            </div>
+            <div class="canvas-wrapper">
+                <h3>Com Filtro</h3>
+                <canvas id="filtradoCanvas"></canvas>
+                <div class="histogram-wrapper" id="hw-filt" style="display: none; margin-top: 15px;">
+                    <canvas id="histogramFilt" width="256" height="150" style="background:#fff; border:1px solid #ccc;"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
