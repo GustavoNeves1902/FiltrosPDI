@@ -155,7 +155,6 @@ escalaDeCinza.addEventListener("click", aplicarEscalaDeCinza);
 
 //LIMIARIZAÇÃO
 function aplicarLimiariazacao() {
-
   const { imageData, data } = obterPixels();
 
   const limiar = parseInt(document.getElementById("thresholdRange").value);
@@ -252,3 +251,24 @@ Aritmeticas.addEventListener("click", () => {
 });
 
 operacaoSelecionada.addEventListener("change", aplicarOperacoesAritmeticas);
+
+//LOGARITMICA
+function aplicarTransformacaoLogaritmica() {
+  const { imageData, data } = obterPixels();
+
+  const c = 255 / Math.log(256);
+
+  for (let i = 0; i < data.length; i += 4) {
+    data[i] = c * Math.log(1 + data[i]);
+    data[i + 1] = c * Math.log(1 + data[i + 1]);
+    data[i + 2] = c * Math.log(1 + data[i + 2]);
+  }
+
+  ctxFiltrado.putImageData(imageData, 0, 0);
+}
+
+const logaritmica = document.getElementById("transformacaoLogaritmica");
+logaritmica.addEventListener("click", () => {
+  esconderControles();
+  aplicarTransformacaoLogaritmica();
+});

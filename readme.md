@@ -22,3 +22,10 @@ Soma: sobrepor imagens, se passar de 255 -> mantemos 255
 Subtração: diferenca entre fotos. Se baixar de 0, mantemos 0
 Multiplicacao: após multiplicar, normalizamos dividindo tudo por 255
 Divisao: nao podemos dividir por 0
+
+__TRANSFORMACAO LOGARITMICA__
+Faz com que os pixels pretos e escuros fiquem mais claros, sem mexer muito nos pixels que já sao brancos
+Novo valor = C x log(1 + valor atual)
+C = 255/log(256)
+
+__HISTROGRAMA__
