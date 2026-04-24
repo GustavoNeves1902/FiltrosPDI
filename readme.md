@@ -30,3 +30,4 @@ C = 255/log(256)
 
 __HISTROGRAMA__
 é um contador de pixels
+calcula a "quantidade" de cinza em cada pixel e distribui no gráfico
