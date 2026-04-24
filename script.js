@@ -272,3 +272,41 @@ logaritmica.addEventListener("click", () => {
   esconderControles();
   aplicarTransformacaoLogaritmica();
 });
+
+//HISTOGRAMA 
+function aplicarHistograma(){
+  const {width,height,data} = obterPixels();
+
+  let histograma = new Array(256).fill(0);
+
+  for (let i = 0; i<data.length; i +=4){
+    let r = data[i];
+    let g = data[i+1];
+    let b = data[i+2];
+
+    let cinza = Math.round((0.299 * r) + (0.587 * g) + (0.114 * b));
+
+    histograma[cinza]++;
+  }
+
+  let valorMaximo = Math.max(...histograma); //para saber a altura do grafico
+
+  ctxFiltrado.fillStyle = 'white';
+  ctxFiltrado.fillRect(0,0,width,height);
+
+  ctxFiltrado.fillStyle = 'black';
+
+  let larguraBarra = width/256;
+
+  for(let i = 0; i< 256; i++){
+    let alturaBarra = (histograma[i] / valorMaximo) * height;
+
+    ctxFiltrado.fillRect(i * larguraBarra, height - alturaBarra, larguraBarra, alturaBarra);
+  }
+}
+
+const histograma = document.getElementById('histograma');
+histograma.addEventListener('click', () => {
+  esconderControles();
+  aplicarHistograma();
+})

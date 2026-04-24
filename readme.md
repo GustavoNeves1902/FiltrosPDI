@@ -29,3 +29,4 @@ Novo valor = C x log(1 + valor atual)
 C = 255/log(256)
 
 __HISTROGRAMA__
+é um contador de pixels
