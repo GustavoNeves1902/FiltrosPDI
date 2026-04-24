@@ -12,12 +12,12 @@ const roberts = document.getElementById("roberts");
 const prewitt = document.getElementById("prewitt");
 const sobel = document.getElementById("sobel");
 const transformacaoLogaritmica = document.getElementById(
-  "transformacaoLogaritmica"
+  "transformacaoLogaritmica",
 );
 const Negativo = document.getElementById("Negativo");
 const Histograma = document.getElementById("histograma");
 const equalizacaoDeHistograma = document.getElementById(
-  "equalizacaoDeHistograma"
+  "equalizacaoDeHistograma",
 );
 
 const canvasOriginal = document.getElementById("originalCanvas");
@@ -33,6 +33,65 @@ canvasFiltrado.height = height;
 
 const imagemEntrada = document.getElementById("imageInput");
 let originalImage = new Image();
+
+//IMAGEM DE ENTRADA
+imagemEntrada.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      originalImage.onload = () => {
+        canvasOriginal.width = originalImage.width;
+        canvasOriginal.height = originalImage.height;
+        ctxOriginal.drawImage(originalImage, 0, 0);
+
+        canvasFiltrado.width = originalImage.width;
+        canvasFiltrado.height = originalImage.height;
+        ctxFiltrado.clearRect(
+          0,
+          0,
+          canvasFiltrado.width,
+          canvasFiltrado.height,
+        );
+      };
+      originalImage.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+//imagem 2 (operacoes aritmeticas)
+const imagemEntrada2 = document.getElementById("imageInput2");
+const operacaoSelecionada = document.getElementById("operacaoSelect");
+
+const canvasImagemB = document.getElementById("canvasImagemB");
+const ctxImagemB = canvasImagemB.getContext("2d");
+const wrapperImagemB = document.getElementById("wrapperImagemB");
+
+let temImagemB = false;
+
+imagemEntrada2.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img2 = new Image();
+      img2.onload = () => {
+        const width = canvasOriginal.width;
+        const height = canvasOriginal.height;
+        canvasImagemB.width = width;
+        canvasImagemB.height = height;
+
+        ctxImagemB.drawImage(img2, 0, 0, width, height);
+        temImagemB = true;
+
+        aplicarOperacoesAritmeticas();
+      };
+      img2.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
 // Funções auxiliares
 function obterPixels() {
@@ -52,8 +111,10 @@ function esconderControles() {
   document.getElementById("filter-controls").style.display = "none";
   document.getElementById("limiar-controls").style.display = "none";
 
-  document.getElementById("arithmetic-controls").style.display = "none";
   document.getElementById("highboost-controls").style.display = "none";
+  document.getElementById("arithmetic-image-controls").style.display = "none";
+
+  wrapperImagemB.style.display = "none";
 }
 
 //NEGATIVO
@@ -94,6 +155,7 @@ escalaDeCinza.addEventListener("click", aplicarEscalaDeCinza);
 
 //LIMIARIZAÇÃO
 function aplicarLimiariazacao() {
+
   const { imageData, data } = obterPixels();
 
   const limiar = parseInt(document.getElementById("thresholdRange").value);
@@ -118,8 +180,9 @@ limiarizacao.addEventListener("click", () => {
   document.getElementById("filter-controls").style.display = "flex";
   document.getElementById("limiar-controls").style.display = "flex";
 
-  document.getElementById("arithmetic-controls").style.display = "none";
+  document.getElementById("arithmetic-image-controls").style.display = "none";
   document.getElementById("highboost-controls").style.display = "none";
+  wrapperImagemB.style.display = "none";
 
   aplicarLimiariazacao();
 });
@@ -133,28 +196,59 @@ thresholdRange.addEventListener("input", (event) => {
   aplicarLimiariazacao();
 });
 
-//IMAGEM DE ENTRADA
-imagemEntrada.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      originalImage.onload = () => {
-        canvasOriginal.width = originalImage.width;
-        canvasOriginal.height = originalImage.height;
-        ctxOriginal.drawImage(originalImage, 0, 0);
+//OPERACOES ARITMETICAS
+function aplicarOperacoesAritmeticas() {
+  if (!temImagemB) return;
 
-        canvasFiltrado.width = originalImage.width;
-        canvasFiltrado.height = originalImage.height;
-        ctxFiltrado.clearRect(
-          0,
-          0,
-          canvasFiltrado.width,
-          canvasFiltrado.height
-        );
-      };
-      originalImage.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
+  const width = canvasOriginal.width;
+  const height = canvasOriginal.height;
+
+  const { data: dataA } = obterPixels();
+
+  const imgDataB = ctxImagemB.getImageData(0, 0, width, height);
+  const dataB = imgDataB.data;
+
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
+
+  const operacao = operacaoSelecionada.value;
+
+  for (let i = 0; i < dataA.length; i += 4) {
+    for (let c = 0; c < 3; c++) {
+      let idx = i + c;
+      let vA = dataA[idx];
+      let vB = dataB[idx];
+      let res = 0;
+
+      if (operacao === "soma") {
+        res = vA + vB;
+      } else if (operacao === "subtracao") {
+        res = vA - vB;
+      } else if (operacao === "multiplicacao") {
+        res = (vA * vB) / 255;
+      } else if (operacao === "divisao") {
+        let divisor = vB === 0 ? 1 : vB;
+        res = (vA / divisor) * 255;
+      }
+
+      if (res > 255) res = 255;
+      if (res < 0) res = 0;
+
+      dataSaida[idx] = res;
+    }
+
+    dataSaida[i + 3] = 255; //Alpha
   }
+  ctxFiltrado.putImageData(saida, 0, 0);
+}
+
+const Aritmeticas = document.getElementById("operacoesAritmeticas");
+Aritmeticas.addEventListener("click", () => {
+  esconderControles();
+  document.getElementById("filter-controls").style.display = "flex";
+  document.getElementById("arithmetic-image-controls").style.display = "flex";
+
+  wrapperImagemB.style.display = "block";
 });
+
+operacaoSelecionada.addEventListener("change", aplicarOperacoesAritmeticas);

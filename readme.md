@@ -16,3 +16,9 @@ __LIMIARIZAÇÃO__
 Transforma o pixel em 0 ou 255 de acordo com o limir
 acima do limiar -> 255
 abaixo do limiar -> 0
+
+__OPERACOES ARITMÉTICAS__
+Soma: sobrepor imagens, se passar de 255 -> mantemos 255
+Subtração: diferenca entre fotos. Se baixar de 0, mantemos 0
+Multiplicacao: após multiplicar, normalizamos dividindo tudo por 255
+Divisao: nao podemos dividir por 0
