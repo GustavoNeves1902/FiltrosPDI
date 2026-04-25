@@ -273,40 +273,99 @@ logaritmica.addEventListener("click", () => {
   aplicarTransformacaoLogaritmica();
 });
 
-//HISTOGRAMA 
-function aplicarHistograma(){
-  const {width,height,data} = obterPixels();
+//HISTOGRAMA
+function aplicarHistograma() {
+  const { width, height, data } = obterPixels();
 
   let histograma = new Array(256).fill(0);
 
-  for (let i = 0; i<data.length; i +=4){
+  for (let i = 0; i < data.length; i += 4) {
     let r = data[i];
-    let g = data[i+1];
-    let b = data[i+2];
+    let g = data[i + 1];
+    let b = data[i + 2];
 
-    let cinza = Math.round((0.299 * r) + (0.587 * g) + (0.114 * b));
+    let cinza = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
 
     histograma[cinza]++;
   }
 
   let valorMaximo = Math.max(...histograma); //para saber a altura do grafico
 
-  ctxFiltrado.fillStyle = 'white';
-  ctxFiltrado.fillRect(0,0,width,height);
+  ctxFiltrado.fillStyle = "white";
+  ctxFiltrado.fillRect(0, 0, width, height);
 
-  ctxFiltrado.fillStyle = 'black';
+  ctxFiltrado.fillStyle = "black";
 
-  let larguraBarra = width/256;
+  let larguraBarra = width / 256;
 
-  for(let i = 0; i< 256; i++){
+  for (let i = 0; i < 256; i++) {
     let alturaBarra = (histograma[i] / valorMaximo) * height;
 
-    ctxFiltrado.fillRect(i * larguraBarra, height - alturaBarra, larguraBarra, alturaBarra);
+    ctxFiltrado.fillRect(
+      i * larguraBarra,
+      height - alturaBarra,
+      larguraBarra,
+      alturaBarra,
+    );
   }
 }
 
-const histograma = document.getElementById('histograma');
-histograma.addEventListener('click', () => {
+const histograma = document.getElementById("histograma");
+histograma.addEventListener("click", () => {
   esconderControles();
   aplicarHistograma();
-})
+});
+
+//EQUALIZACAO DE HISTOGRAMA
+function aplicarEqualizacao() {
+  const { width, height, imageData, data } = obterPixels();
+
+  let histograma = new Array(256).fill(0);
+
+  for (let i = 0; i < data.length; i += 4) {
+    let r = data[i];
+    let g = data[i + 1];
+    let b = data[i + 2];
+
+    let cinza = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+    histograma[cinza]++;
+  }
+
+  let soma = new Array(256).fill(0);
+  soma[0] = histograma[0]; //iguala os valores
+
+  for (let i = 1; i < 256; i++) {
+    soma[i] = soma[i - 1] + histograma[i];
+  }
+
+  let mapaCores = new Array(256).fill(0);
+
+  let somaMin = soma.find((valor) => valor > 0);
+  let totalPixels = width * height;
+
+  for (let i = 0; i < 256; i++) {
+    let novoValor = Math.round(
+      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255,
+    );
+
+    if (novoValor > 255) novoValor = 255;
+    if (novoValor < 0) novoValor = 0;
+
+    mapaCores[i] = novoValor;
+  }
+
+  for (let i = 0; i < data.length; i += 4) {
+    data[i] = mapaCores[data[i]];
+    data[i + 1] = mapaCores[data[i + 1]];
+    data[i + 2] = mapaCores[data[i + 2]];
+  }
+
+  ctxFiltrado.putImageData(imageData, 0, 0);
+}
+
+const equalizador = document.getElementById("equalizacaoDeHistograma");
+
+equalizador.addEventListener("click", () => {
+  esconderControles();
+  aplicarEqualizacao();
+});
