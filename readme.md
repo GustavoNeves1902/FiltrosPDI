@@ -48,3 +48,6 @@ melhor ferramenta para remover ruído sal-pimenta
 coloca uma janela 3x3 em cima da imagem, pega o pixel central e os 8 em volta
 coloca todos em vetor em ordem crescente, retira as extremidades e pega o valor do meio
 pinta o pixel central com esse valor
+
+**PASSA-BAIXA MEDIA**
+parecido com a mediana, porém soma-se o valor de RGA e escolhe a média do valor para colorir o pixel central

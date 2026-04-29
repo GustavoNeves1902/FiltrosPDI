@@ -515,3 +515,49 @@ passaBaixaMediana.addEventListener("click", () => {
   esconderControles();
   aplicarMediana();
 });
+
+//MEDIA
+function aplicarMedia() {
+  const { width, height, imageData, data } = obterPixels();
+
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
+  
+  for (let i = 0; i < data.length; i++) {
+    dataSaida[i] = data[i];
+  }
+
+  for (let y = 1; y < height - 1; y++) {
+    for (let x = 1; x < width - 1; x++) {
+      let somaR = 0;
+      let somaG = 0;
+      let somaB = 0;
+
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const idx = ((dy + y) * width + (x + dx)) * 4;
+
+          somaR += data[idx];
+          somaG += data[idx + 1];
+          somaB += data[idx + 2];
+        }
+      }
+
+      const mediaR = Math.round(somaR / 9);
+      const mediaG = Math.round(somaG / 9);
+      const mediaB = Math.round(somaB / 9);
+
+      const idxCentro = (y * width + x) * 4;
+      dataSaida[idxCentro] = mediaR;
+      dataSaida[idxCentro + 1] = mediaG;
+      dataSaida[idxCentro + 2] = mediaB;
+    }
+  }
+
+  ctxFiltrado.putImageData(saida, 0, 0);
+}
+
+passaBaixaMedia.addEventListener("click", () => {
+  esconderControles();
+  aplicarMedia();
+});
