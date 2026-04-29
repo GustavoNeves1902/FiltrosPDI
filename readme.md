@@ -37,3 +37,8 @@ histograma apenas mostra o problema, equalizador resolve
 estica as barras do gráfico para que elas ocupem todo o espaço disponível
 constraste corrigido
 conta os pixels de cada tom de cinza -> acumula a soma dos pixels anteriores -> cria um dicionário para traduzir a transformacao dos pixels -> troca as cores seguindo o dicionario
+
+**CRESCIMENTO DE REGIOES**
+Como se fosse a varinha mágica do canva
+seleciona o objeto clicado de acordo com a cor do pixel selecionado
+depende do limiar escolhido
