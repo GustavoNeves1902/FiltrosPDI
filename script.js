@@ -12,12 +12,12 @@ const roberts = document.getElementById("roberts");
 const prewitt = document.getElementById("prewitt");
 const sobel = document.getElementById("sobel");
 const transformacaoLogaritmica = document.getElementById(
-  "transformacaoLogaritmica",
+  "transformacaoLogaritmica"
 );
 const Negativo = document.getElementById("Negativo");
 const Histograma = document.getElementById("histograma");
 const equalizacaoDeHistograma = document.getElementById(
-  "equalizacaoDeHistograma",
+  "equalizacaoDeHistograma"
 );
 
 const canvasOriginal = document.getElementById("originalCanvas");
@@ -51,7 +51,7 @@ imagemEntrada.addEventListener("change", (event) => {
           0,
           0,
           canvasFiltrado.width,
-          canvasFiltrado.height,
+          canvasFiltrado.height
         );
       };
       originalImage.src = e.target.result;
@@ -115,6 +115,7 @@ function esconderControles() {
   document.getElementById("arithmetic-image-controls").style.display = "none";
 
   wrapperImagemB.style.display = "none";
+  modoCrescimentoAtivo = false;
 }
 
 //NEGATIVO
@@ -305,7 +306,7 @@ function aplicarHistograma() {
       i * larguraBarra,
       height - alturaBarra,
       larguraBarra,
-      alturaBarra,
+      alturaBarra
     );
   }
 }
@@ -345,7 +346,7 @@ function aplicarEqualizacao() {
 
   for (let i = 0; i < 256; i++) {
     let novoValor = Math.round(
-      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255,
+      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255
     );
 
     if (novoValor > 255) novoValor = 255;
@@ -368,4 +369,100 @@ const equalizador = document.getElementById("equalizacaoDeHistograma");
 equalizador.addEventListener("click", () => {
   esconderControles();
   aplicarEqualizacao();
+});
+
+//CRESCIMENTO DE REGIOES
+let modoCrescimentoAtivo = false;
+
+function aplicarCrescimentoDeRegioes(startX, startY) {
+  const { width, height, imageData, data } = obterPixels();
+
+  const tolerancia = parseInt(document.getElementById("thresholdRange").value);
+
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
+  for (let i = 0; i < dataSaida.length; i += 4) {
+    dataSaida[i] = 0;
+    dataSaida[i + 1] = 0;
+    dataSaida[i + 2] = 0;
+    dataSaida[i + 3] = 255;
+  }
+
+  function getCinza(x, y) {
+    const idx = (y * width + x) * 4;
+    return Math.round(
+      0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]
+    );
+  }
+
+  const SementeCinza = getCinza(startX, startY);
+
+  const visitados = new Uint8Array(width * height); //0 = nao visitado e 1 = visitado
+
+  const pilha = [[startX, startY]];
+
+  visitados[startY * width + startX] = 1; //marca a semente como visitada
+
+  while (pilha.length > 0) {
+    const [cx, cy] = pilha.pop(); //tira o primeiro pixel
+
+    const idxAtual = (cy * width + cx) * 4;
+    dataSaida[idxAtual] = 255;
+    dataSaida[idxAtual + 1] = 255;
+    dataSaida[idxAtual + 2] = 255;
+
+    const vizinhos = [
+      [cx, cy - 1],
+      [cx, cy + 1],
+      [cx - 1, cy],
+      [cx + 1, cy],
+    ];
+
+    for (let i = 0; i < vizinhos.length; i++) {
+      const nx = vizinhos[i][0];
+      const ny = vizinhos[i][1];
+
+      if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+        const indiceVisitado = ny * width + nx;
+
+        if (visitados[indiceVisitado] === 0) {
+          const cinzaVizinho = getCinza(nx, ny);
+
+          if (Math.abs(cinzaVizinho - SementeCinza) <= tolerancia) {
+            visitados[indiceVisitado] = 1;
+            pilha.push([nx, ny]);
+          }
+        }
+      }
+    }
+  }
+
+  ctxFiltrado.putImageData(saida, 0, 0);
+}
+
+const crescimento = document.getElementById("CrescDeRegiões");
+crescimento.addEventListener("click", () => {
+  esconderControles();
+
+  document.getElementById("filter-controls").style.display = "flex";
+  document.getElementById("limiar-controls").style.display = "flex";
+
+  modoCrescimentoAtivo = true;
+  alert(
+    "Crescimento de regiões ativo. Ajuste o limiar e clique na imagem para escolher a semente."
+  );
+});
+
+canvasOriginal.addEventListener("click", (event) => {
+  if (modoCrescimentoAtivo) {
+    const rect = canvasOriginal.getBoundingClientRect();
+    const x = Math.floor(
+      (event.clientX - rect.left) * (canvasOriginal.width / rect.width)
+    );
+    const y = Math.floor(
+      (event.clientY - rect.top) * (canvasOriginal.height / rect.height)
+    );
+
+    aplicarCrescimentoDeRegioes(x, y);
+  }
 });
