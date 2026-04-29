@@ -12,13 +12,18 @@ const roberts = document.getElementById("roberts");
 const prewitt = document.getElementById("prewitt");
 const sobel = document.getElementById("sobel");
 const transformacaoLogaritmica = document.getElementById(
-  "transformacaoLogaritmica"
+  "transformacaoLogaritmica",
 );
 const Negativo = document.getElementById("Negativo");
 const Histograma = document.getElementById("histograma");
 const equalizacaoDeHistograma = document.getElementById(
-  "equalizacaoDeHistograma"
+  "equalizacaoDeHistograma",
 );
+const Aritmeticas = document.getElementById("operacoesAritmeticas");
+const logaritmica = document.getElementById("transformacaoLogaritmica");
+const histograma = document.getElementById("histograma");
+const equalizador = document.getElementById("equalizacaoDeHistograma");
+const crescimento = document.getElementById("CrescDeRegiões");
 
 const canvasOriginal = document.getElementById("originalCanvas");
 const canvasFiltrado = document.getElementById("filtradoCanvas");
@@ -51,7 +56,7 @@ imagemEntrada.addEventListener("change", (event) => {
           0,
           0,
           canvasFiltrado.width,
-          canvasFiltrado.height
+          canvasFiltrado.height,
         );
       };
       originalImage.src = e.target.result;
@@ -242,7 +247,6 @@ function aplicarOperacoesAritmeticas() {
   ctxFiltrado.putImageData(saida, 0, 0);
 }
 
-const Aritmeticas = document.getElementById("operacoesAritmeticas");
 Aritmeticas.addEventListener("click", () => {
   esconderControles();
   document.getElementById("filter-controls").style.display = "flex";
@@ -268,7 +272,6 @@ function aplicarTransformacaoLogaritmica() {
   ctxFiltrado.putImageData(imageData, 0, 0);
 }
 
-const logaritmica = document.getElementById("transformacaoLogaritmica");
 logaritmica.addEventListener("click", () => {
   esconderControles();
   aplicarTransformacaoLogaritmica();
@@ -306,12 +309,11 @@ function aplicarHistograma() {
       i * larguraBarra,
       height - alturaBarra,
       larguraBarra,
-      alturaBarra
+      alturaBarra,
     );
   }
 }
 
-const histograma = document.getElementById("histograma");
 histograma.addEventListener("click", () => {
   esconderControles();
   aplicarHistograma();
@@ -346,7 +348,7 @@ function aplicarEqualizacao() {
 
   for (let i = 0; i < 256; i++) {
     let novoValor = Math.round(
-      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255
+      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255,
     );
 
     if (novoValor > 255) novoValor = 255;
@@ -363,8 +365,6 @@ function aplicarEqualizacao() {
 
   ctxFiltrado.putImageData(imageData, 0, 0);
 }
-
-const equalizador = document.getElementById("equalizacaoDeHistograma");
 
 equalizador.addEventListener("click", () => {
   esconderControles();
@@ -391,7 +391,7 @@ function aplicarCrescimentoDeRegioes(startX, startY) {
   function getCinza(x, y) {
     const idx = (y * width + x) * 4;
     return Math.round(
-      0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]
+      0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2],
     );
   }
 
@@ -440,7 +440,6 @@ function aplicarCrescimentoDeRegioes(startX, startY) {
   ctxFiltrado.putImageData(saida, 0, 0);
 }
 
-const crescimento = document.getElementById("CrescDeRegiões");
 crescimento.addEventListener("click", () => {
   esconderControles();
 
@@ -449,7 +448,7 @@ crescimento.addEventListener("click", () => {
 
   modoCrescimentoAtivo = true;
   alert(
-    "Crescimento de regiões ativo. Ajuste o limiar e clique na imagem para escolher a semente."
+    "Crescimento de regiões ativo. Ajuste o limiar e clique na imagem para escolher a semente.",
   );
 });
 
@@ -457,12 +456,62 @@ canvasOriginal.addEventListener("click", (event) => {
   if (modoCrescimentoAtivo) {
     const rect = canvasOriginal.getBoundingClientRect();
     const x = Math.floor(
-      (event.clientX - rect.left) * (canvasOriginal.width / rect.width)
+      (event.clientX - rect.left) * (canvasOriginal.width / rect.width),
     );
     const y = Math.floor(
-      (event.clientY - rect.top) * (canvasOriginal.height / rect.height)
+      (event.clientY - rect.top) * (canvasOriginal.height / rect.height),
     );
 
     aplicarCrescimentoDeRegioes(x, y);
   }
+});
+
+//MEDIANA
+function aplicarMediana() {
+  const { width, height, imageData, data } = obterPixels();
+
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
+  for (let i = 0; i < data.length; i++) {
+    dataSaida[i] = data[i];
+  }
+
+  for (let y = 1; y < height - 1; y++) {
+    //heigth -1 para nao chegar nas bordas pois nao tem todos os vizinhos
+
+    for (let x = 1; x < width - 1; x++) {
+      //width -1 para nao chegar nas bordas pois nao tem todos os vizinhos
+
+      let vizinhosR = [];
+      let vizinhosG = [];
+      let vizinhosB = [];
+
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const idx = ((y + dy) * width + (x + dx)) * 4;
+
+          vizinhosR.push(data[idx]);
+          vizinhosG.push(data[idx + 1]);
+          vizinhosB.push(data[idx + 2]);
+        }
+      }
+
+      vizinhosR.sort((a, b) => a - b);
+      vizinhosG.sort((a, b) => a - b);
+      vizinhosB.sort((a, b) => a - b);
+
+      const indiceMeio = 4;
+
+      const idxCentro = (y * width + x) * 4;
+      dataSaida[idxCentro] = vizinhosR[indiceMeio];
+      dataSaida[idxCentro + 1] = vizinhosG[indiceMeio];
+      dataSaida[idxCentro + 2] = vizinhosB[indiceMeio];
+    }
+  }
+  ctxFiltrado.putImageData(saida, 0, 0);
+}
+
+passaBaixaMediana.addEventListener("click", () => {
+  esconderControles();
+  aplicarMediana();
 });

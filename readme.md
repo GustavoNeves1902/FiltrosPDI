@@ -42,3 +42,9 @@ conta os pixels de cada tom de cinza -> acumula a soma dos pixels anteriores -> 
 Como se fosse a varinha mágica do canva
 seleciona o objeto clicado de acordo com a cor do pixel selecionado
 depende do limiar escolhido
+
+**PASSA-BAIXA MEDIANA**
+melhor ferramenta para remover ruído sal-pimenta
+coloca uma janela 3x3 em cima da imagem, pega o pixel central e os 8 em volta
+coloca todos em vetor em ordem crescente, retira as extremidades e pega o valor do meio
+pinta o pixel central com esse valor
