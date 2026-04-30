@@ -25,6 +25,8 @@ const histograma = document.getElementById("histograma");
 const equalizador = document.getElementById("equalizacaoDeHistograma");
 const crescimento = document.getElementById("CrescDeRegiões");
 
+const btndownload = document.getElementById('btndoanload');
+
 const canvasOriginal = document.getElementById("originalCanvas");
 const canvasFiltrado = document.getElementById("filtradoCanvas");
 const ctxOriginal = canvasOriginal.getContext("2d");
@@ -627,3 +629,14 @@ passaBaixaMedia.addEventListener("click", () => {
   esconderControles();
   aplicarMedia();
 });
+
+
+btndownload.addEventListener('click', () => {
+  const linkTemporario = document.createElement('a');
+
+  linkTemporario.download = 'imagem-com-filtro.png';
+
+  linkTemporario.href = canvasFiltrado.toDataURL('image/png');
+
+  linkTemporario.click();
+})
