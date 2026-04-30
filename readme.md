@@ -18,10 +18,12 @@ acima do limiar -> 255
 abaixo do limiar -> 0
 
 **OPERACOES ARITMÉTICAS**
-Soma: sobrepor imagens, se passar de 255 -> mantemos 255
-Subtração: diferenca entre fotos. Se baixar de 0, mantemos 0
+Soma: sobrepor imagens.  soma pode chegar a 510 (255 + 255)
+Subtração: diferenca entre fotos. pode chegar a -255 (0 - 255)
 Multiplicacao: após multiplicar, normalizamos dividindo tudo por 255
 Divisao: nao podemos dividir por 0
+NovoValor = (valoratual + 255) / 3;
+
 
 **TRANSFORMACAO LOGARITMICA**
 Faz com que os pixels pretos e escuros fiquem mais claros, sem mexer muito nos pixels que já sao brancos

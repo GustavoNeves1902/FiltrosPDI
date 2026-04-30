@@ -292,6 +292,12 @@ function aplicarOperacoesAritmeticas() {
         res = (vA / divisor) * 255;
       }
 
+      if(operacao === "soma" || operacao === "subtracao"){
+        res = Math.round((res + 255) / 3);
+      }else{
+        res = Math.round(res);
+      }
+
       if (res > 255) res = 255;
       if (res < 0) res = 0;
 
