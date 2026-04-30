@@ -65,7 +65,7 @@ imagemEntrada.addEventListener("change", (event) => {
   }
 });
 
-//imagem 2 (operacoes aritmeticas)
+//imagem 2 (apenas para operacoes aritmeticas)
 const imagemEntrada2 = document.getElementById("imageInput2");
 const operacaoSelecionada = document.getElementById("operacaoSelect");
 
@@ -123,6 +123,46 @@ function esconderControles() {
   modoCrescimentoAtivo = false;
 }
 
+function transformaremCiza(data) {
+  for (let i = 0; i < data.length; i += 4) {
+    let r = data[i];
+    let g = data[i + 1];
+    let b = data[i + 2];
+
+    let cinza = calcularLuminancia(r,g,b);
+
+    data[i] = cinza; //vermelho novo
+    data[i + 1] = cinza; //verde novo
+    data[i + 2] = cinza; //azul novo
+  }
+
+  
+}
+
+function calcularLuminancia(r, g, b) {
+  return Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+}
+
+function transformarVetorEmCinza(data) {
+  for (let i = 0; i < data.length; i += 4) {
+    let cinza = calcularLuminancia(data[i], data[i + 1], data[i + 2]);
+
+    data[i] = cinza;
+    data[i + 1] = cinza;
+    data[i + 2] = cinza;
+  }
+}
+
+function gerarVetorHistograma(data) {
+  let histograma = new Array(256).fill(0);
+
+  for (let i = 0; i < data.length; i += 4) {
+    let cinza = calcularLuminancia(data[i], data[i + 1], data[i + 2]);
+    histograma[cinza]++;
+  }
+  return histograma;
+}
+
 //NEGATIVO
 function aplicarNegativo() {
   esconderControles();
@@ -143,17 +183,7 @@ function aplicarEscalaDeCinza() {
   esconderControles();
   const { imageData, data } = obterPixels();
 
-  for (let i = 0; i < data.length; i += 4) {
-    let r = data[i];
-    let g = data[i + 1];
-    let b = data[i + 2];
-
-    let cinza = 0.299 * r + 0.587 * g + 0.114 * b;
-
-    data[i] = cinza; //vermelho novo
-    data[i + 1] = cinza; //verde novo
-    data[i + 2] = cinza; //azul novo
-  }
+  transformaremCiza(data);
 
   ctxFiltrado.putImageData(imageData, 0, 0);
 }
@@ -165,18 +195,14 @@ function aplicarLimiariazacao() {
 
   const limiar = parseInt(document.getElementById("thresholdRange").value);
 
+  transformaremCiza(data);
+
   for (let i = 0; i < data.length; i += 4) {
-    let r = data[i];
-    let g = data[i + 1];
-    let b = data[i + 2];
+    let cor = data[i] >= limiar ? 255 : 0;
 
-    let cinza = 0.299 * r + 0.587 * g + 0.114 * b;
-
-    let novoValor = cinza >= limiar ? 255 : 0;
-
-    data[i] = novoValor;
-    data[i + 1] = novoValor;
-    data[i + 2] = novoValor;
+    data[i] = cor;
+    data[i + 1] = cor;
+    data[i + 2] = cor;
   }
 
   ctxFiltrado.putImageData(imageData, 0, 0);
@@ -284,12 +310,7 @@ function aplicarHistograma() {
   let histograma = new Array(256).fill(0);
 
   for (let i = 0; i < data.length; i += 4) {
-    let r = data[i];
-    let g = data[i + 1];
-    let b = data[i + 2];
-
-    let cinza = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-
+    let cinza = calcularLuminancia(data[i], data[i + 1], data[i + 2]);
     histograma[cinza]++;
   }
 
@@ -323,19 +344,10 @@ histograma.addEventListener("click", () => {
 function aplicarEqualizacao() {
   const { width, height, imageData, data } = obterPixels();
 
-  let histograma = new Array(256).fill(0);
-
-  for (let i = 0; i < data.length; i += 4) {
-    let r = data[i];
-    let g = data[i + 1];
-    let b = data[i + 2];
-
-    let cinza = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-    histograma[cinza]++;
-  }
+  let histograma = gerarVetorHistograma(data);
 
   let soma = new Array(256).fill(0);
-  soma[0] = histograma[0]; //iguala os valores
+  soma[0] = histograma[0]; //iguala os valores inciais
 
   for (let i = 1; i < 256; i++) {
     soma[i] = soma[i - 1] + histograma[i];
@@ -358,9 +370,17 @@ function aplicarEqualizacao() {
   }
 
   for (let i = 0; i < data.length; i += 4) {
-    data[i] = mapaCores[data[i]];
-    data[i + 1] = mapaCores[data[i + 1]];
-    data[i + 2] = mapaCores[data[i + 2]];
+    let r = data[i];
+    let g = data[i + 1];
+    let b = data[i + 2];
+
+    let cinza = calcularLuminancia(r,g,b);
+
+    let novaCorEqualizada = mapaCores[cinza];
+
+    data[i] = novaCorEqualizada; // R
+    data[i + 1] = novaCorEqualizada; // G
+    data[i + 2] = novaCorEqualizada; // B
   }
 
   ctxFiltrado.putImageData(imageData, 0, 0);
@@ -522,7 +542,7 @@ function aplicarMedia() {
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
-  
+
   for (let i = 0; i < data.length; i++) {
     dataSaida[i] = data[i];
   }
