@@ -48,7 +48,7 @@ button {
 }
 
 button:hover {
-  background-color: #777; 
+  background-color: #777;
 }
 
 .main-content {
@@ -102,4 +102,15 @@ canvas {
   background-color: #fff;
   min-height: 300px;
   min-width: 300px;
+}
+
+.canvas-histograma {
+  display: none; /* Escondido por padrão */
+  margin-top: 15px;
+  min-height: 150px; /* Sobrescreve a regra dos 300px */
+  min-width: 256px; /* Sobrescreve a regra dos 300px */
+  border: 1px solid #999;
+  background-color: #eaeaea; /* Fundo cinza claro para destacar as barras pretas */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
 }

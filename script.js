@@ -30,6 +30,11 @@ const canvasFiltrado = document.getElementById("filtradoCanvas");
 const ctxOriginal = canvasOriginal.getContext("2d");
 const ctxFiltrado = canvasFiltrado.getContext("2d");
 
+const canvasGraficoOrig = document.getElementById("graficoOriginal");
+const ctxGraficoOrig = canvasGraficoOrig.getContext("2d");
+const canvasGraficoFilt = document.getElementById("graficoFiltrado");
+const ctxGraficoFilt = canvasGraficoFilt.getContext("2d");
+
 const width = canvasOriginal.width;
 const height = canvasOriginal.height;
 
@@ -98,6 +103,28 @@ imagemEntrada2.addEventListener("change", (event) => {
   }
 });
 
+function desenharGrafico(vetorHistograma, ctx, largura, altura) {
+  // Limpa o desenho anterior
+  ctx.clearRect(0, 0, largura, altura);
+
+  // Acha o pico do gráfico (o tom de cinza que mais aparece)
+  let maxValor = Math.max(...vetorHistograma);
+
+  ctx.fillStyle = "#333"; // Cor escura para as barras
+
+  // Desenha as 256 barrinhas
+  for (let i = 0; i < 256; i++) {
+    let alturaBarra = (vetorHistograma[i] / maxValor) * altura;
+    // O eixo Y do canvas começa em cima, por isso (altura - alturaBarra)
+    ctx.fillRect(
+      i * (largura / 256),
+      altura - alturaBarra,
+      largura / 256,
+      alturaBarra,
+    );
+  }
+}
+
 // Funções auxiliares
 function obterPixels() {
   const width = canvasOriginal.width;
@@ -119,6 +146,9 @@ function esconderControles() {
   document.getElementById("highboost-controls").style.display = "none";
   document.getElementById("arithmetic-image-controls").style.display = "none";
 
+  document.getElementById("graficoOriginal").style.display = "none";
+  document.getElementById("graficoFiltrado").style.display = "none";
+
   wrapperImagemB.style.display = "none";
   modoCrescimentoAtivo = false;
 }
@@ -129,14 +159,12 @@ function transformaremCiza(data) {
     let g = data[i + 1];
     let b = data[i + 2];
 
-    let cinza = calcularLuminancia(r,g,b);
+    let cinza = calcularLuminancia(r, g, b);
 
     data[i] = cinza; //vermelho novo
     data[i + 1] = cinza; //verde novo
     data[i + 2] = cinza; //azul novo
   }
-
-  
 }
 
 function calcularLuminancia(r, g, b) {
@@ -344,13 +372,19 @@ histograma.addEventListener("click", () => {
 function aplicarEqualizacao() {
   const { width, height, imageData, data } = obterPixels();
 
-  let histograma = gerarVetorHistograma(data);
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   let soma = new Array(256).fill(0);
-  soma[0] = histograma[0]; //iguala os valores inciais
+  soma[0] = histogramaOriginal[0]; //iguala os valores inciais
 
   for (let i = 1; i < 256; i++) {
-    soma[i] = soma[i - 1] + histograma[i];
+    soma[i] = soma[i - 1] + histogramaOriginal[i];
   }
 
   let mapaCores = new Array(256).fill(0);
@@ -374,7 +408,7 @@ function aplicarEqualizacao() {
     let g = data[i + 1];
     let b = data[i + 2];
 
-    let cinza = calcularLuminancia(r,g,b);
+    let cinza = calcularLuminancia(r, g, b);
 
     let novaCorEqualizada = mapaCores[cinza];
 
@@ -384,10 +418,22 @@ function aplicarEqualizacao() {
   }
 
   ctxFiltrado.putImageData(imageData, 0, 0);
+
+  let histogramaEqualizado = gerarVetorHistograma(data); // O 'data' já está com as cores novas!
+  desenharGrafico(
+    histogramaEqualizado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 equalizador.addEventListener("click", () => {
   esconderControles();
+
+  document.getElementById("graficoOriginal").style.display = "block";
+  document.getElementById("graficoFiltrado").style.display = "block";
+
   aplicarEqualizacao();
 });
 
