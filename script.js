@@ -454,7 +454,9 @@ function aplicarCrescimentoDeRegioes(startX, startY) {
   const tolerancia = parseInt(document.getElementById("thresholdRange").value);
 
   const saida = ctxFiltrado.createImageData(width, height);
+
   const dataSaida = saida.data;
+
   for (let i = 0; i < dataSaida.length; i += 4) {
     dataSaida[i] = 0;
     dataSaida[i + 1] = 0;
@@ -464,12 +466,15 @@ function aplicarCrescimentoDeRegioes(startX, startY) {
 
   function getCinza(x, y) {
     const idx = (y * width + x) * 4;
-    return Math.round(
-      0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2],
-    );
+
+    let r = data[idx];
+    let g = data[idx + 1];
+    let b = data[idx + 2];
+
+    return calcularLuminancia(r, g, b);
   }
 
-  const SementeCinza = getCinza(startX, startY);
+  const Semente = getCinza(startX, startY);
 
   const visitados = new Uint8Array(width * height); //0 = nao visitado e 1 = visitado
 
@@ -502,7 +507,7 @@ function aplicarCrescimentoDeRegioes(startX, startY) {
         if (visitados[indiceVisitado] === 0) {
           const cinzaVizinho = getCinza(nx, ny);
 
-          if (Math.abs(cinzaVizinho - SementeCinza) <= tolerancia) {
+          if (Math.abs(cinzaVizinho - Semente) <= tolerancia) {
             visitados[indiceVisitado] = 1;
             pilha.push([nx, ny]);
           }
