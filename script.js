@@ -25,7 +25,7 @@ const histograma = document.getElementById("histograma");
 const equalizador = document.getElementById("equalizacaoDeHistograma");
 const crescimento = document.getElementById("CrescDeRegiões");
 
-const btndownload = document.getElementById('btndoanload');
+const btndownload = document.getElementById("btndoanload");
 
 const canvasOriginal = document.getElementById("originalCanvas");
 const canvasFiltrado = document.getElementById("filtradoCanvas");
@@ -292,9 +292,9 @@ function aplicarOperacoesAritmeticas() {
         res = (vA / divisor) * 255;
       }
 
-      if(operacao === "soma" || operacao === "subtracao"){
+      if (operacao === "soma" || operacao === "subtracao") {
         res = Math.round((res + 255) / 3);
-      }else{
+      } else {
         res = Math.round(res);
       }
 
@@ -641,13 +641,63 @@ passaBaixaMedia.addEventListener("click", () => {
   aplicarMedia();
 });
 
+function aplicarGaussiano() {
+  const { width, height, imageData, data } = obterPixels();
 
-btndownload.addEventListener('click', () => {
-  const linkTemporario = document.createElement('a');
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
 
-  linkTemporario.download = 'imagem-com-filtro.png';
+  const kernel = [
+    [1, 2, 1],
+    [2, 4, 2],
+    [1, 2, 1],
+  ];
+  const divisor = 16;
 
-  linkTemporario.href = canvasFiltrado.toDataURL('image/png');
+  for (let y = 1; y < height - 1; y++) {
+    for (let x = 1; x < width - 1; x++) {
+      let somaR = 0;
+      let somaG = 0;
+      let somaB = 0;
+
+      for (let ky = -1; ky <= 1; ky++) {
+        for (let kx = -1; kx <= 1; kx++) {
+          let vizinhoX = kx + x;
+          let vizinhoY = ky + y;
+
+          let idxVizinho = (vizinhoY * width + vizinhoX) * 4;
+
+          let peso = kernel[ky + 1][kx + 1]; //achar a posicao na matriz kernel
+
+          somaR += data[idxVizinho] * peso;
+          somaG += data[idxVizinho + 1] * peso;
+          somaB += data[idxVizinho + 2] * peso;
+        }
+      }
+
+      let idxCentro = (y * width + x) * 4;
+
+      dataSaida[idxCentro] = Math.round(somaR / divisor);
+      dataSaida[idxCentro + 1] = Math.round(somaG / divisor);
+      dataSaida[idxCentro + 2] = Math.round(somaB / divisor);
+      dataSaida[idxCentro + 3] = 255;
+    }
+  }
+
+  ctxFiltrado.putImageData(saida, 0, 0);
+}
+
+Gaussiano.addEventListener("click", () => {
+  esconderControles();
+  aplicarGaussiano();
+});
+
+btndownload.addEventListener("click", () => {
+  const linkTemporario = document.createElement("a");
+
+  linkTemporario.download = "imagem-com-filtro.png";
+
+  linkTemporario.href = canvasFiltrado.toDataURL("image/png");
 
   linkTemporario.click();
-})
+});

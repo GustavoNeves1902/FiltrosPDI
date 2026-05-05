@@ -53,3 +53,6 @@ pinta o pixel central com esse valor
 
 **PASSA-BAIXA MEDIA**
 parecido com a mediana, porém soma-se o valor de RGA e escolhe a média do valor para colorir o pixel central
+
+**PASSA_BAIXA GAUSSIANO**
+Se baiseia na função Gaussiana (distribuição normal) e atribui pesos maiores aos pixels centrais e menores aos pixels mais distantes
