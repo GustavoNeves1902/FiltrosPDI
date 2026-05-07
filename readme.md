@@ -77,14 +77,13 @@ procura onde as cores mudam drasticamente e desenha uma linha branca ali
 Teorema de Pitagoras -> se o valor for perto de 255, houve degrau de cor
 
 function aplicarRoberts(){
-  const {width, height, imageData, data} = obterPixels();
+const {width, height, imageData, data} = obterPixels();
 
-  const saida = ctxFiltrado.createImageData(width,height);
-  const dataSaida = saida.data;
+const saida = ctxFiltrado.createImageData(width,height);
+const dataSaida = saida.data;
 
-  for (let y=0; y < height-1; y++){
-    for (let x=0; x < width-1; x++){
-
+for (let y=0; y < height-1; y++){
+for (let x=0; x < width-1; x++){
 
       let idx11 = (y * width + x) * 4; //atual
       let idx12 = (y * width + (x + 1)) * 4; //direita
@@ -95,7 +94,7 @@ function aplicarRoberts(){
       let l12 = calcularLuminancia(data[idx12], data[idx12+1], data[idx12+2]);
       let l21 = calcularLuminancia(data[idx21], data[idx21+1], data[idx21+2]);
       let l22 = calcularLuminancia(data[idx22], data[idx22+1], data[idx22+2]);
-    
+
       let gx = l11 - l22;
       let gy = l12 - l21;
 
@@ -110,9 +109,10 @@ function aplicarRoberts(){
       dataSaida[idx11 + 2] = mag
       dataSaida[idx11 + 3] = 255;
     }
-  }
 
-  ctxFiltrado.putImageData(saida,0,0);
+}
+
+ctxFiltrado.putImageData(saida,0,0);
 }
 
 **PREWITT**
@@ -120,14 +120,30 @@ Evolucao do Roberts
 kernel 3x3
 da uma leve borrada na linha ao mesmo tempo em que procura as diferencas das cores
 
-Kernel X = 
-[-1,  0,  1]
-[-1,  0,  1]
-[-1,  0,  1] //linhas verticais
+Kernel X =
+[-1, 0, 1]
+[-1, 0, 1]
+[-1, 0, 1] //linhas verticais
 
-Kernel Y = 
+Kernel Y =
 [-1, -1, -1]
-[ 0,  0,  0]
-[ 1,  1,  1] //linhas horizontais
+[ 0, 0, 0]
+[ 1, 1, 1] //linhas horizontais
 
 no final, usa o teorema de pitagoras para calcular a magnitude
+
+**SOBEL**
+irmao gemeo do PREWITT
+muda os kernels
+
+Kernel x =
+[-1, 0, 1]
+[-2, 0, 2]
+[-1, 0, 1]
+
+Kernel y =
+[-1, -2, -1]
+[ 0, 0, 0]
+[ 1, 2, 1]
+
+cria um efeito de suavizaçao ao mesmo tempo em que calcula a diferenca das cores
