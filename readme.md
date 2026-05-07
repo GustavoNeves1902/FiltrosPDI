@@ -18,12 +18,11 @@ acima do limiar -> 255
 abaixo do limiar -> 0
 
 **OPERACOES ARITMÉTICAS**
-Soma: sobrepor imagens.  soma pode chegar a 510 (255 + 255)
+Soma: sobrepor imagens. soma pode chegar a 510 (255 + 255)
 Subtração: diferenca entre fotos. pode chegar a -255 (0 - 255)
 Multiplicacao: após multiplicar, normalizamos dividindo tudo por 255
 Divisao: nao podemos dividir por 0
 NovoValor = (valoratual + 255) / 3;
-
 
 **TRANSFORMACAO LOGARITMICA**
 Faz com que os pixels pretos e escuros fiquem mais claros, sem mexer muito nos pixels que já sao brancos
@@ -52,7 +51,13 @@ coloca todos em vetor em ordem crescente, retira as extremidades e pega o valor 
 pinta o pixel central com esse valor
 
 **PASSA-BAIXA MEDIA**
-parecido com a mediana, porém soma-se o valor de RGA e escolhe a média do valor para colorir o pixel central
+parecido com a mediana, porém soma-se o valor de RGB e escolhe a média do valor para colorir o pixel central
 
 **PASSA_BAIXA GAUSSIANO**
-Se baiseia na função Gaussiana (distribuição normal) e atribui pesos maiores aos pixels centrais e menores aos pixels mais distantes
+Se baseia na função Gaussiana (distribuição normal) e atribui pesos maiores aos pixels centrais e menores aos pixels mais distantes
+
+kernel = [
+[1, 2, 1],
+[2, 4, 2],
+[1, 2, 1],
+];

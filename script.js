@@ -614,7 +614,7 @@ function aplicarMedia() {
 
       for (let dy = -1; dy <= 1; dy++) {
         for (let dx = -1; dx <= 1; dx++) {
-          const idx = ((dy + y) * width + (x + dx)) * 4;
+          const idx = ((dy + y) * width + (dx + x)) * 4;
 
           somaR += data[idx];
           somaG += data[idx + 1];
