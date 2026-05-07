@@ -915,6 +915,21 @@ function aplicarPrewittSobel(tipo) {
   ctxFiltrado.putImageData(saida, 0, 0);
 }
 
+function aplicarPassaAltaBasico(){
+  const {width, height, imageData, data} = obterPixels();
+
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
+
+  const kernel = [
+    [-1, -1, -1],
+    [-1,  8, -1],
+    [-1, -1, -1]
+  ];
+
+  
+}
+
 btndownload.addEventListener("click", () => {
   const linkTemporario = document.createElement("a");
 
