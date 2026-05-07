@@ -830,88 +830,54 @@ roberts.addEventListener("click", () => {
   aplicarRoberts();
 });
 
-function aplicarPrewitt() {
-  const { width, height, imageData, data } = obterPixels();
 
-  const saida = ctxFiltrado.createImageData(width, height);
-  const dataSaida = saida.data;
-
-  const kernelX = [
-    [-1, 0, 1],
-    [-1, 0, 1],
-    [-1, 0, 1],
-  ];
-
-  const kernelY = [
-    [-1, -1, -1],
-    [0, 0, 0],
-    [1, 1, 1],
-  ];
-
-  for (let y = 1; y < height - 1; y++) {
-    for (let x = 1; x < height - 1; x++) {
-      let gx = 0;
-      let gy = 0;
-
-      for (let ky = -1; ky <= 1; ky++) {
-        for (let kx = -1; kx <= 1; kx++) {
-          const idxVizinho = ((y + ky) * width + (x + kx)) * 4;
-
-          const lum = calcularLuminancia(
-            data[idxVizinho],
-            data[idxVizinho + 1],
-            data[idxVizinho + 2]
-          );
-
-          let pesoX = kernelX[ky + 1][kx + 1];
-          let pesoY = kernelY[ky + 1][kx + 1];
-
-          gx += lum * pesoX;
-          gy += lum * pesoY;
-        }
-      }
-
-      let mag = Math.sqrt(gx * gx + gy * gy);
-
-      mag = Math.min(255, mag);
-
-      let idxCentro = (y * width + x) * 4;
-
-      dataSaida[idxCentro] = mag;
-      dataSaida[idxCentro + 1] = mag;
-      dataSaida[idxCentro + 2] = mag;
-      dataSaida[idxCentro + 3] = 255;
-    }
-  }
-
-  ctxFiltrado.putImageData(saida, 0, 0);
-}
 
 prewitt.addEventListener("click", () => {
   esconderControles();
-  aplicarPrewitt();
+  aplicarPrewittSobel(1);
 });
 
-function aplicarSobel() {
+sobel.addEventListener("click", () => {
+  esconderControles();
+  aplicarPrewittSobel(2);
+});
+
+function aplicarPrewittSobel(tipo) {
   const { width, height, imageData, data } = obterPixels();
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
 
-  const kernelX = [
-    [-1, 0, 1],
-    [-2, 0, 2],
-    [-1, 0, 1],
-  ];
+  let kernelX;
+  let kernelY;
 
-  const kernelY = [
-    [-1, -2, -1],
-    [0, 0, 0],
-    [1, 2, 1],
-  ];
+  if ((tipo === 1)) {
+    //prewitt
+    kernelX = [
+      [-1, 0, 1],
+      [-1, 0, 1],
+      [-1, 0, 1],
+    ];
+    kernelY = [
+      [-1, -1, -1],
+      [0, 0, 0],
+      [1, 1, 1],
+    ];
+  } else {
+     kernelX = [
+      [-1, 0, 1],
+      [-2, 0, 2],
+      [-1, 0, 1],
+    ];
+    kernelY = [
+      [-1, -2, -1],
+      [0, 0, 0],
+      [1, 2, 1],
+    ];
+  }
 
   for (let y = 1; y < height - 1; y++) {
-    for (let x = 1; x < height - 1; x++) {
+    for (let x = 1; x < width - 1; x++) {
       let gx = 0;
       let gy = 0;
 
@@ -948,11 +914,6 @@ function aplicarSobel() {
 
   ctxFiltrado.putImageData(saida, 0, 0);
 }
-
-sobel.addEventListener("click", () => {
-  esconderControles();
-  aplicarSobel();
-});
 
 btndownload.addEventListener("click", () => {
   const linkTemporario = document.createElement("a");

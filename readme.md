@@ -132,6 +132,64 @@ Kernel Y =
 
 no final, usa o teorema de pitagoras para calcular a magnitude
 
+function aplicarPrewitt() {
+const { width, height, imageData, data } = obterPixels();
+
+const saida = ctxFiltrado.createImageData(width, height);
+const dataSaida = saida.data;
+
+const kernelX = [
+[-1, 0, 1],
+[-1, 0, 1],
+[-1, 0, 1],
+];
+
+const kernelY = [
+[-1, -1, -1],
+[0, 0, 0],
+[1, 1, 1],
+];
+
+for (let y = 1; y < height - 1; y++) {
+for (let x = 1; x < height - 1; x++) {
+let gx = 0;
+let gy = 0;
+
+      for (let ky = -1; ky <= 1; ky++) {
+        for (let kx = -1; kx <= 1; kx++) {
+          const idxVizinho = ((y + ky) * width + (x + kx)) * 4;
+
+          const lum = calcularLuminancia(
+            data[idxVizinho],
+            data[idxVizinho + 1],
+            data[idxVizinho + 2]
+          );
+
+          let pesoX = kernelX[ky + 1][kx + 1];
+          let pesoY = kernelY[ky + 1][kx + 1];
+
+          gx += lum * pesoX;
+          gy += lum * pesoY;
+        }
+      }
+
+      let mag = Math.sqrt(gx * gx + gy * gy);
+
+      mag = Math.min(255, mag);
+
+      let idxCentro = (y * width + x) * 4;
+
+      dataSaida[idxCentro] = mag;
+      dataSaida[idxCentro + 1] = mag;
+      dataSaida[idxCentro + 2] = mag;
+      dataSaida[idxCentro + 3] = 255;
+    }
+
+}
+
+ctxFiltrado.putImageData(saida, 0, 0);
+}
+
 **SOBEL**
 irmao gemeo do PREWITT
 muda os kernels
@@ -147,3 +205,60 @@ Kernel y =
 [ 1, 2, 1]
 
 cria um efeito de suavizaçao ao mesmo tempo em que calcula a diferenca das cores
+function aplicarSobel() {
+const { width, height, imageData, data } = obterPixels();
+
+const saida = ctxFiltrado.createImageData(width, height);
+const dataSaida = saida.data;
+
+const kernelX = [
+[-1, 0, 1],
+[-2, 0, 2],
+[-1, 0, 1],
+];
+
+const kernelY = [
+[-1, -2, -1],
+[0, 0, 0],
+[1, 2, 1],
+];
+
+for (let y = 1; y < height - 1; y++) {
+for (let x = 1; x < height - 1; x++) {
+let gx = 0;
+let gy = 0;
+
+      for (let ky = -1; ky <= 1; ky++) {
+        for (let kx = -1; kx <= 1; kx++) {
+          const idxVizinho = ((y + ky) * width + (x + kx)) * 4;
+
+          const lum = calcularLuminancia(
+            data[idxVizinho],
+            data[idxVizinho + 1],
+            data[idxVizinho + 2]
+          );
+
+          let pesoX = kernelX[ky + 1][kx + 1];
+          let pesoY = kernelY[ky + 1][kx + 1];
+
+          gx += lum * pesoX;
+          gy += lum * pesoY;
+        }
+      }
+
+      let mag = Math.sqrt(gx * gx + gy * gy);
+
+      mag = Math.min(255, mag);
+
+      let idxCentro = (y * width + x) * 4;
+
+      dataSaida[idxCentro] = mag;
+      dataSaida[idxCentro + 1] = mag;
+      dataSaida[idxCentro + 2] = mag;
+      dataSaida[idxCentro + 3] = 255;
+    }
+
+}
+
+ctxFiltrado.putImageData(saida, 0, 0);
+}
