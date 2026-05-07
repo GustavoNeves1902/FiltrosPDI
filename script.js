@@ -7,17 +7,18 @@ const passaAltaAltoReforco = document.getElementById("passaAltaAltoReforco");
 const passaBaixaMedia = document.getElementById("passaBaixaMedia");
 const passaBaixaMediana = document.getElementById("passaBaixaMediana");
 const Gaussiano = document.getElementById("Gaussiano");
-const passaBaixaMin = document.getElementById("passaBaixaMin");
+const passaBaixaMin = document.getElementById("PassaBaixaMin");
+const passaBaixaMax = document.getElementById("PassaBaixaMax");
 const roberts = document.getElementById("roberts");
 const prewitt = document.getElementById("prewitt");
 const sobel = document.getElementById("sobel");
 const transformacaoLogaritmica = document.getElementById(
-  "transformacaoLogaritmica",
+  "transformacaoLogaritmica"
 );
 const Negativo = document.getElementById("Negativo");
 const Histograma = document.getElementById("histograma");
 const equalizacaoDeHistograma = document.getElementById(
-  "equalizacaoDeHistograma",
+  "equalizacaoDeHistograma"
 );
 const Aritmeticas = document.getElementById("operacoesAritmeticas");
 const logaritmica = document.getElementById("transformacaoLogaritmica");
@@ -63,7 +64,7 @@ imagemEntrada.addEventListener("change", (event) => {
           0,
           0,
           canvasFiltrado.width,
-          canvasFiltrado.height,
+          canvasFiltrado.height
         );
       };
       originalImage.src = e.target.result;
@@ -122,7 +123,7 @@ function desenharGrafico(vetorHistograma, ctx, largura, altura) {
       i * (largura / 256),
       altura - alturaBarra,
       largura / 256,
-      alturaBarra,
+      alturaBarra
     );
   }
 }
@@ -366,7 +367,7 @@ function aplicarHistograma() {
       i * larguraBarra,
       height - alturaBarra,
       larguraBarra,
-      alturaBarra,
+      alturaBarra
     );
   }
 }
@@ -385,7 +386,7 @@ function aplicarEqualizacao() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   let soma = new Array(256).fill(0);
@@ -402,7 +403,7 @@ function aplicarEqualizacao() {
 
   for (let i = 0; i < 256; i++) {
     let novoValor = Math.round(
-      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255,
+      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255
     );
 
     if (novoValor > 255) novoValor = 255;
@@ -432,7 +433,7 @@ function aplicarEqualizacao() {
     histogramaEqualizado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -527,7 +528,7 @@ crescimento.addEventListener("click", () => {
 
   modoCrescimentoAtivo = true;
   alert(
-    "Crescimento de regiões ativo. Ajuste o limiar e clique na imagem para escolher a semente.",
+    "Crescimento de regiões ativo. Ajuste o limiar e clique na imagem para escolher a semente."
   );
 });
 
@@ -535,10 +536,10 @@ canvasOriginal.addEventListener("click", (event) => {
   if (modoCrescimentoAtivo) {
     const rect = canvasOriginal.getBoundingClientRect();
     const x = Math.floor(
-      (event.clientX - rect.left) * (canvasOriginal.width / rect.width),
+      (event.clientX - rect.left) * (canvasOriginal.width / rect.width)
     );
     const y = Math.floor(
-      (event.clientY - rect.top) * (canvasOriginal.height / rect.height),
+      (event.clientY - rect.top) * (canvasOriginal.height / rect.height)
     );
 
     aplicarCrescimentoDeRegioes(x, y);
@@ -690,6 +691,96 @@ function aplicarGaussiano() {
 Gaussiano.addEventListener("click", () => {
   esconderControles();
   aplicarGaussiano();
+});
+
+function aplicarMin() {
+  const { width, height, imageData, data } = obterPixels();
+
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
+
+  for (let y = 1; y < height - 1; y++) {
+    for (let x = 1; x < width - 1; x++) {
+      let minR = 255;
+      let minG = 255;
+      let minB = 255;
+
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          let idx = ((y + dy) * width + (x + dx)) * 4;
+
+          if (data[idx] < minR) {
+            minR = data[idx];
+          }
+          if (data[idx + 1] < minG) {
+            minG = data[idx + 1];
+          }
+          if (data[idx + 2] < minB) {
+            minB = data[idx + 2];
+          }
+        }
+      }
+
+      let idxCentro = (y * width + x) * 4;
+
+      dataSaida[idxCentro] = minR;
+      dataSaida[idxCentro + 1] = minG;
+      dataSaida[idxCentro + 2] = minB;
+      dataSaida[idxCentro + 3] = 255;
+    }
+  }
+
+  ctxFiltrado.putImageData(saida, 0, 0);
+}
+
+passaBaixaMin.addEventListener("click", () => {
+  esconderControles();
+  aplicarMin();
+});
+
+function aplicarMax() {
+  const { width, height, imageData, data } = obterPixels();
+
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
+
+  for (let y = 1; y < height - 1; y++) {
+    for (let x = 1; x < width - 1; x++) {
+      let minR = 0;
+      let minG = 0;
+      let minB = 0;
+
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          let idx = ((y + dy) * width + (x + dx)) * 4;
+
+          if (data[idx] > minR) {
+            minR = data[idx];
+          }
+          if (data[idx + 1] > minG) {
+            minG = data[idx + 1];
+          }
+          if (data[idx + 2] > minB) {
+            minB = data[idx + 2];
+          }
+        }
+      }
+
+      let idxCentro = (y * width + x) * 4;
+
+      dataSaida[idxCentro] = minR;
+      dataSaida[idxCentro + 1] = minG;
+      dataSaida[idxCentro + 2] = minB;
+      dataSaida[idxCentro + 3] = 255;
+    }
+  }
+
+  ctxFiltrado.putImageData(saida, 0, 0);
+}
+
+passaBaixaMax.addEventListener("click", () => {
+  esconderControles();
+  aplicarMax();
 });
 
 btndownload.addEventListener("click", () => {
