@@ -69,3 +69,65 @@ kernel = [
 ];
 
 **ROBERTS**
+Usado para detectar bordas
+usa um tabuleiro 2x2, focando nas diagonais
+procura onde as cores mudam drasticamente e desenha uma linha branca ali
+1)A diferença de cor entre o pixel atual e o vizinho da diagonal inferior direita. (Chamamos de Gradient X ou Gx).
+2)A diferença de cor entre o vizinho da direita e o vizinho de baixo. (Chamamos de Gradient Y ou Gy).
+Teorema de Pitagoras -> se o valor for perto de 255, houve degrau de cor
+
+function aplicarRoberts(){
+  const {width, height, imageData, data} = obterPixels();
+
+  const saida = ctxFiltrado.createImageData(width,height);
+  const dataSaida = saida.data;
+
+  for (let y=0; y < height-1; y++){
+    for (let x=0; x < width-1; x++){
+
+
+      let idx11 = (y * width + x) * 4; //atual
+      let idx12 = (y * width + (x + 1)) * 4; //direita
+      let idx21 = ((y + 1) * width + x) * 4; //embaixo
+      let idx22 = ((y + 1) * width + (x + 1)) * 4; //diagonal inferior direita
+
+      let l11 = calcularLuminancia(data[idx11], data[idx11+1], data[idx11+2]);
+      let l12 = calcularLuminancia(data[idx12], data[idx12+1], data[idx12+2]);
+      let l21 = calcularLuminancia(data[idx21], data[idx21+1], data[idx21+2]);
+      let l22 = calcularLuminancia(data[idx22], data[idx22+1], data[idx22+2]);
+    
+      let gx = l11 - l22;
+      let gy = l12 - l21;
+
+      let mag = Math.sqrt((gx * gx) + (gy * gy));
+
+      mag = Math.min(255,mag);
+
+
+
+      dataSaida[idx11] = mag
+      dataSaida[idx11 + 1] = mag
+      dataSaida[idx11 + 2] = mag
+      dataSaida[idx11 + 3] = 255;
+    }
+  }
+
+  ctxFiltrado.putImageData(saida,0,0);
+}
+
+**PREWITT**
+Evolucao do Roberts
+kernel 3x3
+da uma leve borrada na linha ao mesmo tempo em que procura as diferencas das cores
+
+Kernel X = 
+[-1,  0,  1]
+[-1,  0,  1]
+[-1,  0,  1] //linhas verticais
+
+Kernel Y = 
+[-1, -1, -1]
+[ 0,  0,  0]
+[ 1,  1,  1] //linhas horizontais
+
+no final, usa o teorema de pitagoras para calcular a magnitude

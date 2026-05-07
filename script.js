@@ -783,9 +783,113 @@ passaBaixaMax.addEventListener("click", () => {
   aplicarMax();
 });
 
-function aplicarRoberts(){
-  
+function aplicarRoberts() {
+  const { width, height, imageData, data } = obterPixels();
+
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
+
+  function pitagoras(x, y) {
+    return Math.sqrt(x * x + y * y);
+  }
+
+  for (let y = 0; y < height - 1; y++) {
+    for (let x = 0; x < width - 1; x++) {
+      let idx11 = (y * width + x) * 4; //atual
+      let idx12 = (y * width + (x + 1)) * 4; //direita
+      let idx21 = ((y + 1) * width + x) * 4; //embaixo
+      let idx22 = ((y + 1) * width + (x + 1)) * 4; //diagonal inferior direita
+
+      let gxR = data[idx11] - data[idx22];
+      let gyR = data[idx12] - data[idx21];
+
+      let magR = pitagoras(gxR, gyR);
+
+      let gxG = data[idx11 + 1] - data[idx22 + 1];
+      let gyG = data[idx12 + 1] - data[idx21 + 1];
+
+      let magG = pitagoras(gxG, gyG);
+
+      let gxB = data[idx11 + 2] - data[idx22 + 2];
+      let gyB = data[idx12 + 2] - data[idx21 + 2];
+
+      let magB = pitagoras(gxB, gyB);
+
+      dataSaida[idx11] = Math.min(255, magR);
+      dataSaida[idx11 + 1] = Math.min(255, magG);
+      dataSaida[idx11 + 2] = Math.min(255, magB);
+      dataSaida[idx11 + 3] = 255;
+    }
+  }
+
+  ctxFiltrado.putImageData(saida, 0, 0);
 }
+
+roberts.addEventListener("click", () => {
+  esconderControles();
+  aplicarRoberts();
+});
+
+function aplicarPrewitt() {
+  const { width, height, imageData, data } = obterPixels();
+
+  const saida = ctxFiltrado.createImageData(width, height);
+  const dataSaida = saida.data;
+
+  const kernelX = [
+    [-1, 0, 1],
+    [-1, 0, 1],
+    [-1, 0, 1],
+  ];
+
+  const kernelY = [
+    [-1, -1, -1],
+    [0, 0, 0],
+    [1, 1, 1],
+  ];
+
+  for (let y = 1; y < height - 1; y++) {
+    for (let x = 1; x < height - 1; x++) {
+      let gx = 0;
+      let gy = 0;
+
+      for (let ky = -1; ky <= 1; ky++) {
+        for (let kx = -1; kx <= 1; kx++) {
+          const idxVizinho = ((y + ky) * width + (x + kx)) * 4;
+          const lum = calcularLuminancia(
+            data[idxVizinho],
+            data[idxVizinho + 1],
+            data[idxVizinho + 2]
+          );
+
+          let pesoX = kernelX[ky + 1][kx + 1];
+          let pesoY = kernelY[ky + 1][kx + 1];
+
+          gx += lum * pesoX;
+          gy += lum * pesoY;
+        }
+      }
+
+      let mag = Math.sqrt(gx * gx + gy * gy);
+
+      mag = Math.min(255, mag);
+
+      let idxCentro = (y * width + x) * 4;
+
+      dataSaida[idxCentro] = mag;
+      dataSaida[idxCentro + 1] = mag;
+      dataSaida[idxCentro + 2] = mag;
+      dataSaida[idxCentro + 3] = 255;
+    }
+  }
+
+  ctxFiltrado.putImageData(saida, 0, 0);
+}
+
+prewitt.addEventListener("click", () => {
+  esconderControles();
+  aplicarPrewitt();
+});
 
 btndownload.addEventListener("click", () => {
   const linkTemporario = document.createElement("a");
