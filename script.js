@@ -927,8 +927,40 @@ function aplicarPassaAltaBasico(){
     [-1, -1, -1]
   ];
 
-  
+  for (let y = 1; y < height -1; y++){
+    for (let x = 1; x < width - 1; x++){
+      let somaR = 0;
+      let somaG = 0;
+      let somaB = 0;
+
+      for (let ky = -1; ky <=1 ; ky++){
+        for (let kx = -1; kx <= 1; kx++){
+
+          let idxVizinho = ((y + ky) * width + (x + kx)) * 4;
+          let peso = kernel[ky + 1][kx + 1];
+
+          somaR += data[idxVizinho] * peso;
+          somaG += data[idxVizinho + 1] * peso;
+          somaB += data[idxVizinho + 2] * peso;
+        }
+      }
+
+      let idxCentro = (y * width + x) * 4;
+
+      dataSaida[idxCentro] = Math.min(255, Math.max(0, somaR)); //nao pode ser maior que 255 nem menor que 0
+      dataSaida[idxCentro + 1] = Math.min(255, Math.max(0, somaG));
+      dataSaida[idxCentro + 2] = Math.min(255, Math.max(0, somaB));
+      dataSaida[idxCentro + 3] = 255;
+    }
+  }
+
+  ctxFiltrado.putImageData(saida,0,0);
 }
+
+passaAltaBasico.addEventListener('click', ()=> {
+  esconderControles();
+  aplicarPassaAltaBasico();
+})
 
 btndownload.addEventListener("click", () => {
   const linkTemporario = document.createElement("a");
