@@ -53,6 +53,12 @@ pinta o pixel central com esse valor
 **PASSA-BAIXA MEDIA**
 parecido com a mediana, porém soma-se o valor de RGB e escolhe a média do valor para colorir o pixel central
 
+**PASSA-BAIXA MIN**
+Substitui o valor do pixel central pelo menor valor entre seus vizinhos
+
+**PASSA-BAIXA MAX**
+Substitui o valor do pixel central pelo maior valor entre seus vizinhos
+
 **PASSA_BAIXA GAUSSIANO**
 Se baseia na função Gaussiana (distribuição normal) e atribui pesos maiores aos pixels centrais e menores aos pixels mais distantes
 
@@ -61,3 +67,5 @@ kernel = [
 [2, 4, 2],
 [1, 2, 1],
 ];
+
+**ROBERTS**

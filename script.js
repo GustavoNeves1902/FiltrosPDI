@@ -783,6 +783,10 @@ passaBaixaMax.addEventListener("click", () => {
   aplicarMax();
 });
 
+function aplicarRoberts(){
+  
+}
+
 btndownload.addEventListener("click", () => {
   const linkTemporario = document.createElement("a");
 
