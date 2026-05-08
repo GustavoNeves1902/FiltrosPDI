@@ -157,3 +157,6 @@ kernel =
 
 se houver detalhes, quebrasse o equilibrio da multiplicacao
 
+**PASSA ALTA ALTO REFORÇO**
+
+

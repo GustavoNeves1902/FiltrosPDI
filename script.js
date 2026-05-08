@@ -13,12 +13,12 @@ const roberts = document.getElementById("roberts");
 const prewitt = document.getElementById("prewitt");
 const sobel = document.getElementById("sobel");
 const transformacaoLogaritmica = document.getElementById(
-  "transformacaoLogaritmica"
+  "transformacaoLogaritmica",
 );
 const Negativo = document.getElementById("Negativo");
 const Histograma = document.getElementById("histograma");
 const equalizacaoDeHistograma = document.getElementById(
-  "equalizacaoDeHistograma"
+  "equalizacaoDeHistograma",
 );
 const Aritmeticas = document.getElementById("operacoesAritmeticas");
 const logaritmica = document.getElementById("transformacaoLogaritmica");
@@ -64,7 +64,7 @@ imagemEntrada.addEventListener("change", (event) => {
           0,
           0,
           canvasFiltrado.width,
-          canvasFiltrado.height
+          canvasFiltrado.height,
         );
       };
       originalImage.src = e.target.result;
@@ -123,7 +123,7 @@ function desenharGrafico(vetorHistograma, ctx, largura, altura) {
       i * (largura / 256),
       altura - alturaBarra,
       largura / 256,
-      alturaBarra
+      alturaBarra,
     );
   }
 }
@@ -154,6 +154,7 @@ function esconderControles() {
 
   wrapperImagemB.style.display = "none";
   modoCrescimentoAtivo = false;
+  isAltoReforço = 0;
 }
 
 function transformaremCiza(data) {
@@ -239,12 +240,9 @@ function aplicarLimiariazacao() {
   ctxFiltrado.putImageData(imageData, 0, 0);
 }
 limiarizacao.addEventListener("click", () => {
+  esconderControles();
   document.getElementById("filter-controls").style.display = "flex";
   document.getElementById("limiar-controls").style.display = "flex";
-
-  document.getElementById("arithmetic-image-controls").style.display = "none";
-  document.getElementById("highboost-controls").style.display = "none";
-  wrapperImagemB.style.display = "none";
 
   aplicarLimiariazacao();
 });
@@ -367,7 +365,7 @@ function aplicarHistograma() {
       i * larguraBarra,
       height - alturaBarra,
       larguraBarra,
-      alturaBarra
+      alturaBarra,
     );
   }
 }
@@ -386,7 +384,7 @@ function aplicarEqualizacao() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height
+    canvasGraficoOrig.height,
   );
 
   let soma = new Array(256).fill(0);
@@ -403,7 +401,7 @@ function aplicarEqualizacao() {
 
   for (let i = 0; i < 256; i++) {
     let novoValor = Math.round(
-      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255
+      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255,
     );
 
     if (novoValor > 255) novoValor = 255;
@@ -433,7 +431,7 @@ function aplicarEqualizacao() {
     histogramaEqualizado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height
+    canvasGraficoFilt.height,
   );
 }
 
@@ -528,7 +526,7 @@ crescimento.addEventListener("click", () => {
 
   modoCrescimentoAtivo = true;
   alert(
-    "Crescimento de regiões ativo. Ajuste o limiar e clique na imagem para escolher a semente."
+    "Crescimento de regiões ativo. Ajuste o limiar e clique na imagem para escolher a semente.",
   );
 });
 
@@ -536,10 +534,10 @@ canvasOriginal.addEventListener("click", (event) => {
   if (modoCrescimentoAtivo) {
     const rect = canvasOriginal.getBoundingClientRect();
     const x = Math.floor(
-      (event.clientX - rect.left) * (canvasOriginal.width / rect.width)
+      (event.clientX - rect.left) * (canvasOriginal.width / rect.width),
     );
     const y = Math.floor(
-      (event.clientY - rect.top) * (canvasOriginal.height / rect.height)
+      (event.clientY - rect.top) * (canvasOriginal.height / rect.height),
     );
 
     aplicarCrescimentoDeRegioes(x, y);
@@ -830,8 +828,6 @@ roberts.addEventListener("click", () => {
   aplicarRoberts();
 });
 
-
-
 prewitt.addEventListener("click", () => {
   esconderControles();
   aplicarPrewittSobel(1);
@@ -851,7 +847,7 @@ function aplicarPrewittSobel(tipo) {
   let kernelX;
   let kernelY;
 
-  if ((tipo === 1)) {
+  if (tipo === 1) {
     //prewitt
     kernelX = [
       [-1, 0, 1],
@@ -864,7 +860,7 @@ function aplicarPrewittSobel(tipo) {
       [1, 1, 1],
     ];
   } else {
-     kernelX = [
+    kernelX = [
       [-1, 0, 1],
       [-2, 0, 2],
       [-1, 0, 1],
@@ -888,7 +884,7 @@ function aplicarPrewittSobel(tipo) {
           const lum = calcularLuminancia(
             data[idxVizinho],
             data[idxVizinho + 1],
-            data[idxVizinho + 2]
+            data[idxVizinho + 2],
           );
 
           let pesoX = kernelX[ky + 1][kx + 1];
@@ -915,27 +911,41 @@ function aplicarPrewittSobel(tipo) {
   ctxFiltrado.putImageData(saida, 0, 0);
 }
 
-function aplicarPassaAltaBasico(){
-  const {width, height, imageData, data} = obterPixels();
+passaAltaBasico.addEventListener("click", () => {
+  esconderControles();
+  aplicarPassaAltaBasicoEAltoReforco();
+});
+
+passaAltaAltoReforco.addEventListener("click", () => {
+  esconderControles();
+
+  isAltoReforço = 1;
+
+  aplicarPassaAltaBasicoEAltoReforco(3);
+});
+
+
+function aplicarPassaAltaBasicoEAltoReforco(A = 0) {
+  const { width, height, imageData, data } = obterPixels();
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
 
+
   const kernel = [
     [-1, -1, -1],
-    [-1,  8, -1],
-    [-1, -1, -1]
+    [-1, 8 + A, -1],
+    [-1, -1, -1],
   ];
 
-  for (let y = 1; y < height -1; y++){
-    for (let x = 1; x < width - 1; x++){
+  for (let y = 1; y < height - 1; y++) {
+    for (let x = 1; x < width - 1; x++) {
       let somaR = 0;
       let somaG = 0;
       let somaB = 0;
 
-      for (let ky = -1; ky <=1 ; ky++){
-        for (let kx = -1; kx <= 1; kx++){
-
+      for (let ky = -1; ky <= 1; ky++) {
+        for (let kx = -1; kx <= 1; kx++) {
           let idxVizinho = ((y + ky) * width + (x + kx)) * 4;
           let peso = kernel[ky + 1][kx + 1];
 
@@ -954,13 +964,8 @@ function aplicarPassaAltaBasico(){
     }
   }
 
-  ctxFiltrado.putImageData(saida,0,0);
+  ctxFiltrado.putImageData(saida, 0, 0);
 }
-
-passaAltaBasico.addEventListener('click', ()=> {
-  esconderControles();
-  aplicarPassaAltaBasico();
-})
 
 btndownload.addEventListener("click", () => {
   const linkTemporario = document.createElement("a");
