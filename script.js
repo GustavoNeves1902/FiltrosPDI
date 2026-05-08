@@ -200,7 +200,7 @@ function aplicarNegativo() {
   esconderControles();
   const { imageData, data } = obterPixels();
 
-  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  document.getElementById("graficoOriginal").style.display = "block";
   let histogramaOriginal = gerarVetorHistograma(data);
   desenharGrafico(
     histogramaOriginal,
@@ -217,7 +217,7 @@ function aplicarNegativo() {
 
   ctxFiltrado.putImageData(imageData, 0, 0);
 
-  document.getElementById("graficoFiltrado").style.display = "block"; // Garante que estará visível
+  document.getElementById("graficoFiltrado").style.display = "block";
 
   // Lemos o próprio 'data' de novo, pois agora ele guarda a imagem preta e branca!
   let histogramaFiltrado = gerarVetorHistograma(data);
@@ -229,16 +229,16 @@ function aplicarNegativo() {
     canvasGraficoFilt.height,
   );
 }
-Negativo.addEventListener("click", aplicarNegativo);
+Negativo.addEventListener("click", () => {
+  esconderControles();
+  aplicarNegativo();
+});
 
 //ESCALA DE CINZA
 function aplicarEscalaDeCinza() {
-  esconderControles();
   const { imageData, data } = obterPixels();
 
-  transformaremCiza(data);
-
-  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  document.getElementById("graficoOriginal").style.display = "block";
   let histogramaOriginal = gerarVetorHistograma(data);
   desenharGrafico(
     histogramaOriginal,
@@ -247,7 +247,18 @@ function aplicarEscalaDeCinza() {
     canvasGraficoOrig.height,
   );
 
+  transformaremCiza(data);
+
   ctxFiltrado.putImageData(imageData, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 escalaDeCinza.addEventListener("click", () => {
   esconderControles();
@@ -283,7 +294,6 @@ function aplicarLimiariazacao() {
 
   document.getElementById("graficoFiltrado").style.display = "block"; // Garante que estará visível
 
-  // Lemos o próprio 'data' de novo, pois agora ele guarda a imagem preta e branca!
   let histogramaFiltrado = gerarVetorHistograma(data);
 
   desenharGrafico(
@@ -505,6 +515,15 @@ let modoCrescimentoAtivo = false;
 function aplicarCrescimentoDeRegioes(startX, startY) {
   const { width, height, imageData, data } = obterPixels();
 
+  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
+
   const tolerancia = parseInt(document.getElementById("thresholdRange").value);
 
   const saida = ctxFiltrado.createImageData(width, height);
@@ -571,6 +590,15 @@ function aplicarCrescimentoDeRegioes(startX, startY) {
   }
 
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block"; // Garante que estará visível
+  let histogramaFiltrado = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 crescimento.addEventListener("click", () => {
@@ -602,6 +630,15 @@ canvasOriginal.addEventListener("click", (event) => {
 //MEDIANA
 function aplicarMediana() {
   const { width, height, imageData, data } = obterPixels();
+
+  document.getElementById("graficoOriginal").style.display = "block";
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
@@ -642,6 +679,15 @@ function aplicarMediana() {
     }
   }
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(dataSaida);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 passaBaixaMediana.addEventListener("click", () => {
@@ -652,6 +698,15 @@ passaBaixaMediana.addEventListener("click", () => {
 //MEDIA
 function aplicarMedia() {
   const { width, height, imageData, data } = obterPixels();
+
+  document.getElementById("graficoOriginal").style.display = "block";
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
@@ -688,6 +743,15 @@ function aplicarMedia() {
   }
 
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(dataSaida);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 passaBaixaMedia.addEventListener("click", () => {
@@ -700,6 +764,15 @@ function aplicarGaussiano() {
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
+
+  document.getElementById("graficoOriginal").style.display = "block";
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   const kernel = [
     [1, 2, 1],
@@ -739,6 +812,15 @@ function aplicarGaussiano() {
   }
 
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(dataSaida);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 Gaussiano.addEventListener("click", () => {
@@ -748,6 +830,15 @@ Gaussiano.addEventListener("click", () => {
 
 function aplicarMin() {
   const { width, height, imageData, data } = obterPixels();
+
+  document.getElementById("graficoOriginal").style.display = "block";
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
@@ -784,6 +875,15 @@ function aplicarMin() {
   }
 
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(dataSaida);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 passaBaixaMin.addEventListener("click", () => {
@@ -793,6 +893,15 @@ passaBaixaMin.addEventListener("click", () => {
 
 function aplicarMax() {
   const { width, height, imageData, data } = obterPixels();
+
+  document.getElementById("graficoOriginal").style.display = "block";
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
@@ -829,6 +938,15 @@ function aplicarMax() {
   }
 
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(dataSaida);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 passaBaixaMax.addEventListener("click", () => {
