@@ -957,6 +957,15 @@ passaBaixaMax.addEventListener("click", () => {
 function aplicarRoberts() {
   const { width, height, imageData, data } = obterPixels();
 
+  document.getElementById("graficoOriginal").style.display = "block";
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
+
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
 
@@ -994,6 +1003,15 @@ function aplicarRoberts() {
   }
 
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(dataSaida);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 roberts.addEventListener("click", () => {
@@ -1013,6 +1031,15 @@ sobel.addEventListener("click", () => {
 
 function aplicarPrewittSobel(tipo) {
   const { width, height, imageData, data } = obterPixels();
+
+  document.getElementById("graficoOriginal").style.display = "block";
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
@@ -1082,6 +1109,15 @@ function aplicarPrewittSobel(tipo) {
   }
 
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(dataSaida);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 passaAltaBasico.addEventListener("click", () => {
