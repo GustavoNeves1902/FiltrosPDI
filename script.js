@@ -200,6 +200,15 @@ function aplicarNegativo() {
   esconderControles();
   const { imageData, data } = obterPixels();
 
+  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
+
   for (let i = 0; i < data.length; i += 4) {
     data[i] = 255 - data[i]; //vermelho
     data[i + 1] = 255 - data[i + 1]; //verde
@@ -207,6 +216,18 @@ function aplicarNegativo() {
   }
 
   ctxFiltrado.putImageData(imageData, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block"; // Garante que estará visível
+
+  // Lemos o próprio 'data' de novo, pois agora ele guarda a imagem preta e branca!
+  let histogramaFiltrado = gerarVetorHistograma(data);
+
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 Negativo.addEventListener("click", aplicarNegativo);
 
@@ -217,13 +238,34 @@ function aplicarEscalaDeCinza() {
 
   transformaremCiza(data);
 
+  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
+
   ctxFiltrado.putImageData(imageData, 0, 0);
 }
-escalaDeCinza.addEventListener("click", aplicarEscalaDeCinza);
+escalaDeCinza.addEventListener("click", () => {
+  esconderControles();
+  aplicarEscalaDeCinza();
+});
 
 //LIMIARIZAÇÃO
 function aplicarLimiariazacao() {
   const { imageData, data } = obterPixels();
+
+  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   const limiar = parseInt(document.getElementById("thresholdRange").value);
 
@@ -238,7 +280,20 @@ function aplicarLimiariazacao() {
   }
 
   ctxFiltrado.putImageData(imageData, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block"; // Garante que estará visível
+
+  // Lemos o próprio 'data' de novo, pois agora ele guarda a imagem preta e branca!
+  let histogramaFiltrado = gerarVetorHistograma(data);
+
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
+
 limiarizacao.addEventListener("click", () => {
   esconderControles();
   document.getElementById("filter-controls").style.display = "flex";
@@ -924,13 +979,20 @@ passaAltaAltoReforco.addEventListener("click", () => {
   aplicarPassaAltaBasicoEAltoReforco(3);
 });
 
-
 function aplicarPassaAltaBasicoEAltoReforco(A = 0) {
   const { width, height, imageData, data } = obterPixels();
 
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
 
+  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   const kernel = [
     [-1, -1, -1],
@@ -965,6 +1027,17 @@ function aplicarPassaAltaBasicoEAltoReforco(A = 0) {
   }
 
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block"; // Garante que estará visível
+
+  let histogramaFiltrado = gerarVetorHistograma(dataSaida);
+
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 btndownload.addEventListener("click", () => {
