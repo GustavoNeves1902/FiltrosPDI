@@ -218,8 +218,6 @@ function aplicarNegativo() {
   ctxFiltrado.putImageData(imageData, 0, 0);
 
   document.getElementById("graficoFiltrado").style.display = "block";
-
-  // Lemos o próprio 'data' de novo, pois agora ele guarda a imagem preta e branca!
   let histogramaFiltrado = gerarVetorHistograma(data);
 
   desenharGrafico(
@@ -269,7 +267,7 @@ escalaDeCinza.addEventListener("click", () => {
 function aplicarLimiariazacao() {
   const { imageData, data } = obterPixels();
 
-  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  document.getElementById("graficoOriginal").style.display = "block"; 
   let histogramaOriginal = gerarVetorHistograma(data);
   desenharGrafico(
     histogramaOriginal,
@@ -292,7 +290,7 @@ function aplicarLimiariazacao() {
 
   ctxFiltrado.putImageData(imageData, 0, 0);
 
-  document.getElementById("graficoFiltrado").style.display = "block"; // Garante que estará visível
+  document.getElementById("graficoFiltrado").style.display = "block"; 
 
   let histogramaFiltrado = gerarVetorHistograma(data);
 
@@ -386,6 +384,16 @@ operacaoSelecionada.addEventListener("change", aplicarOperacoesAritmeticas);
 //LOGARITMICA
 function aplicarTransformacaoLogaritmica() {
   const { imageData, data } = obterPixels();
+  
+  document.getElementById("graficoOriginal").style.display = "block";
+
+  let histogramaoriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaoriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
 
   const c = 255 / Math.log(256);
 
@@ -396,6 +404,15 @@ function aplicarTransformacaoLogaritmica() {
   }
 
   ctxFiltrado.putImageData(imageData, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 logaritmica.addEventListener("click", () => {
@@ -444,6 +461,7 @@ histograma.addEventListener("click", () => {
 function aplicarEqualizacao() {
   const { width, height, imageData, data } = obterPixels();
 
+  document.getElementById("graficoOriginal").style.display = "block";
   let histogramaOriginal = gerarVetorHistograma(data);
   desenharGrafico(
     histogramaOriginal,
@@ -491,6 +509,7 @@ function aplicarEqualizacao() {
 
   ctxFiltrado.putImageData(imageData, 0, 0);
 
+  document.getElementById("graficoFiltrado").style.display = "block";
   let histogramaEqualizado = gerarVetorHistograma(data); // O 'data' já está com as cores novas!
   desenharGrafico(
     histogramaEqualizado,
@@ -503,9 +522,6 @@ function aplicarEqualizacao() {
 equalizador.addEventListener("click", () => {
   esconderControles();
 
-  document.getElementById("graficoOriginal").style.display = "block";
-  document.getElementById("graficoFiltrado").style.display = "block";
-
   aplicarEqualizacao();
 });
 
@@ -515,7 +531,7 @@ let modoCrescimentoAtivo = false;
 function aplicarCrescimentoDeRegioes(startX, startY) {
   const { width, height, imageData, data } = obterPixels();
 
-  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  document.getElementById("graficoOriginal").style.display = "block";
   let histogramaOriginal = gerarVetorHistograma(data);
   desenharGrafico(
     histogramaOriginal,
@@ -591,7 +607,7 @@ function aplicarCrescimentoDeRegioes(startX, startY) {
 
   ctxFiltrado.putImageData(saida, 0, 0);
 
-  document.getElementById("graficoFiltrado").style.display = "block"; // Garante que estará visível
+  document.getElementById("graficoFiltrado").style.display = "block";
   let histogramaFiltrado = gerarVetorHistograma(data);
   desenharGrafico(
     histogramaFiltrado,
@@ -1139,7 +1155,7 @@ function aplicarPassaAltaBasicoEAltoReforco(A = 0) {
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
 
-  document.getElementById("graficoOriginal").style.display = "block"; // Garante que estará visível
+  document.getElementById("graficoOriginal").style.display = "block"; 
   let histogramaOriginal = gerarVetorHistograma(data);
   desenharGrafico(
     histogramaOriginal,
@@ -1182,7 +1198,7 @@ function aplicarPassaAltaBasicoEAltoReforco(A = 0) {
 
   ctxFiltrado.putImageData(saida, 0, 0);
 
-  document.getElementById("graficoFiltrado").style.display = "block"; // Garante que estará visível
+  document.getElementById("graficoFiltrado").style.display = "block"; 
 
   let histogramaFiltrado = gerarVetorHistograma(dataSaida);
 
