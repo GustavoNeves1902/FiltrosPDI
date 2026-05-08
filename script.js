@@ -38,6 +38,11 @@ const ctxGraficoOrig = canvasGraficoOrig.getContext("2d");
 const canvasGraficoFilt = document.getElementById("graficoFiltrado");
 const ctxGraficoFilt = canvasGraficoFilt.getContext("2d");
 
+const canvasGraficoOrigB = document.getElementById("graficoOriginalB");
+const ctxGraficoOrigB = canvasGraficoOrigB.getContext("2d");
+
+
+
 const width = canvasOriginal.width;
 const height = canvasOriginal.height;
 
@@ -267,7 +272,7 @@ escalaDeCinza.addEventListener("click", () => {
 function aplicarLimiariazacao() {
   const { imageData, data } = obterPixels();
 
-  document.getElementById("graficoOriginal").style.display = "block"; 
+  document.getElementById("graficoOriginal").style.display = "block";
   let histogramaOriginal = gerarVetorHistograma(data);
   desenharGrafico(
     histogramaOriginal,
@@ -290,7 +295,7 @@ function aplicarLimiariazacao() {
 
   ctxFiltrado.putImageData(imageData, 0, 0);
 
-  document.getElementById("graficoFiltrado").style.display = "block"; 
+  document.getElementById("graficoFiltrado").style.display = "block";
 
   let histogramaFiltrado = gerarVetorHistograma(data);
 
@@ -334,6 +339,24 @@ function aplicarOperacoesAritmeticas() {
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
 
+  document.getElementById("graficoOriginal").style.display = "block";
+  let histogramaOriginal = gerarVetorHistograma(dataA);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height,
+  );
+
+  document.getElementById("graficoOriginalB").style.display = "block";
+  let histogramaOriginalB = gerarVetorHistograma(dataB);
+  desenharGrafico(
+    histogramaOriginalB,
+    ctxGraficoOrigB,
+    canvasGraficoOrigB.width,
+    canvasGraficoOrigB.height,
+  );
+
   const operacao = operacaoSelecionada.value;
 
   for (let i = 0; i < dataA.length; i += 4) {
@@ -369,6 +392,16 @@ function aplicarOperacoesAritmeticas() {
     dataSaida[i + 3] = 255; //Alpha
   }
   ctxFiltrado.putImageData(saida, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+
+  let histogramaFiltrado = gerarVetorHistograma(dataSaida);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height,
+  );
 }
 
 Aritmeticas.addEventListener("click", () => {
@@ -384,7 +417,7 @@ operacaoSelecionada.addEventListener("change", aplicarOperacoesAritmeticas);
 //LOGARITMICA
 function aplicarTransformacaoLogaritmica() {
   const { imageData, data } = obterPixels();
-  
+
   document.getElementById("graficoOriginal").style.display = "block";
 
   let histogramaoriginal = gerarVetorHistograma(data);
@@ -1155,7 +1188,7 @@ function aplicarPassaAltaBasicoEAltoReforco(A = 0) {
   const saida = ctxFiltrado.createImageData(width, height);
   const dataSaida = saida.data;
 
-  document.getElementById("graficoOriginal").style.display = "block"; 
+  document.getElementById("graficoOriginal").style.display = "block";
   let histogramaOriginal = gerarVetorHistograma(data);
   desenharGrafico(
     histogramaOriginal,
@@ -1198,7 +1231,7 @@ function aplicarPassaAltaBasicoEAltoReforco(A = 0) {
 
   ctxFiltrado.putImageData(saida, 0, 0);
 
-  document.getElementById("graficoFiltrado").style.display = "block"; 
+  document.getElementById("graficoFiltrado").style.display = "block";
 
   let histogramaFiltrado = gerarVetorHistograma(dataSaida);
 
