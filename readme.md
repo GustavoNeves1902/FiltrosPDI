@@ -158,5 +158,11 @@ kernel =
 se houver detalhes, quebrasse o equilibrio da multiplicacao
 
 **PASSA ALTA ALTO REFORÇO**
+Irmao do Passa Alta Basico, mas muda o kernel
+kernel =
+[-1, -1, -1],
+[-1, 9, -1],
+[-1, -1, -1]
 
+a imagem nao perde sua identidade
 
