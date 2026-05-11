@@ -166,3 +166,9 @@ kernel =
 
 a imagem nao perde sua identidade
 
+**OTSU**
+Calcula por si só o limiar que separa o fundo da imagem principal
+
+Analisa o histograma da imagem e testa todos os limiares possíveis para encontra o ponto de corte perfeito,
+onde a variação das cores pretas e brancas seja a menor possível.
+

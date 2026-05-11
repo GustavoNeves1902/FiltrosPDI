@@ -1,5 +1,5 @@
 const limiarizacao = document.getElementById("limiarizacao");
-const Otsu = document.getElementById("Otsu");
+const otsu = document.getElementById("Otsu");
 const CrescDeRegiões = document.getElementById("CrescDeRegiões");
 const escalaDeCinza = document.getElementById("escalaDeCinza");
 const passaAltaBasico = document.getElementById("passaAltaBasico");
@@ -13,12 +13,12 @@ const roberts = document.getElementById("roberts");
 const prewitt = document.getElementById("prewitt");
 const sobel = document.getElementById("sobel");
 const transformacaoLogaritmica = document.getElementById(
-  "transformacaoLogaritmica",
+  "transformacaoLogaritmica"
 );
 const Negativo = document.getElementById("Negativo");
 const Histograma = document.getElementById("histograma");
 const equalizacaoDeHistograma = document.getElementById(
-  "equalizacaoDeHistograma",
+  "equalizacaoDeHistograma"
 );
 const Aritmeticas = document.getElementById("operacoesAritmeticas");
 const logaritmica = document.getElementById("transformacaoLogaritmica");
@@ -40,8 +40,6 @@ const ctxGraficoFilt = canvasGraficoFilt.getContext("2d");
 
 const canvasGraficoOrigB = document.getElementById("graficoOriginalB");
 const ctxGraficoOrigB = canvasGraficoOrigB.getContext("2d");
-
-
 
 const width = canvasOriginal.width;
 const height = canvasOriginal.height;
@@ -69,7 +67,7 @@ imagemEntrada.addEventListener("change", (event) => {
           0,
           0,
           canvasFiltrado.width,
-          canvasFiltrado.height,
+          canvasFiltrado.height
         );
       };
       originalImage.src = e.target.result;
@@ -128,7 +126,7 @@ function desenharGrafico(vetorHistograma, ctx, largura, altura) {
       i * (largura / 256),
       altura - alturaBarra,
       largura / 256,
-      alturaBarra,
+      alturaBarra
     );
   }
 }
@@ -211,7 +209,7 @@ function aplicarNegativo() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   for (let i = 0; i < data.length; i += 4) {
@@ -229,7 +227,7 @@ function aplicarNegativo() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 Negativo.addEventListener("click", () => {
@@ -247,7 +245,7 @@ function aplicarEscalaDeCinza() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   transformaremCiza(data);
@@ -260,7 +258,7 @@ function aplicarEscalaDeCinza() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 escalaDeCinza.addEventListener("click", () => {
@@ -278,7 +276,7 @@ function aplicarLimiariazacao() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const limiar = parseInt(document.getElementById("thresholdRange").value);
@@ -303,7 +301,7 @@ function aplicarLimiariazacao() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -345,7 +343,7 @@ function aplicarOperacoesAritmeticas() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   document.getElementById("graficoOriginalB").style.display = "block";
@@ -354,7 +352,7 @@ function aplicarOperacoesAritmeticas() {
     histogramaOriginalB,
     ctxGraficoOrigB,
     canvasGraficoOrigB.width,
-    canvasGraficoOrigB.height,
+    canvasGraficoOrigB.height
   );
 
   const operacao = operacaoSelecionada.value;
@@ -400,7 +398,7 @@ function aplicarOperacoesAritmeticas() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -425,7 +423,7 @@ function aplicarTransformacaoLogaritmica() {
     histogramaoriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const c = 255 / Math.log(256);
@@ -444,7 +442,7 @@ function aplicarTransformacaoLogaritmica() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -480,7 +478,7 @@ function aplicarHistograma() {
       i * larguraBarra,
       height - alturaBarra,
       larguraBarra,
-      alturaBarra,
+      alturaBarra
     );
   }
 }
@@ -500,7 +498,7 @@ function aplicarEqualizacao() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   let soma = new Array(256).fill(0);
@@ -517,7 +515,7 @@ function aplicarEqualizacao() {
 
   for (let i = 0; i < 256; i++) {
     let novoValor = Math.round(
-      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255,
+      ((soma[i] - somaMin) / (totalPixels - somaMin)) * 255
     );
 
     if (novoValor > 255) novoValor = 255;
@@ -548,7 +546,7 @@ function aplicarEqualizacao() {
     histogramaEqualizado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -570,7 +568,7 @@ function aplicarCrescimentoDeRegioes(startX, startY) {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const tolerancia = parseInt(document.getElementById("thresholdRange").value);
@@ -646,7 +644,7 @@ function aplicarCrescimentoDeRegioes(startX, startY) {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -658,7 +656,7 @@ crescimento.addEventListener("click", () => {
 
   modoCrescimentoAtivo = true;
   alert(
-    "Crescimento de regiões ativo. Ajuste o limiar e clique na imagem para escolher a semente.",
+    "Crescimento de regiões ativo. Ajuste o limiar e clique na imagem para escolher a semente."
   );
 });
 
@@ -666,10 +664,10 @@ canvasOriginal.addEventListener("click", (event) => {
   if (modoCrescimentoAtivo) {
     const rect = canvasOriginal.getBoundingClientRect();
     const x = Math.floor(
-      (event.clientX - rect.left) * (canvasOriginal.width / rect.width),
+      (event.clientX - rect.left) * (canvasOriginal.width / rect.width)
     );
     const y = Math.floor(
-      (event.clientY - rect.top) * (canvasOriginal.height / rect.height),
+      (event.clientY - rect.top) * (canvasOriginal.height / rect.height)
     );
 
     aplicarCrescimentoDeRegioes(x, y);
@@ -686,7 +684,7 @@ function aplicarMediana() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const saida = ctxFiltrado.createImageData(width, height);
@@ -735,7 +733,7 @@ function aplicarMediana() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -754,7 +752,7 @@ function aplicarMedia() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const saida = ctxFiltrado.createImageData(width, height);
@@ -799,7 +797,7 @@ function aplicarMedia() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -820,7 +818,7 @@ function aplicarGaussiano() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const kernel = [
@@ -868,7 +866,7 @@ function aplicarGaussiano() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -886,7 +884,7 @@ function aplicarMin() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const saida = ctxFiltrado.createImageData(width, height);
@@ -931,7 +929,7 @@ function aplicarMin() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -949,7 +947,7 @@ function aplicarMax() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const saida = ctxFiltrado.createImageData(width, height);
@@ -994,7 +992,7 @@ function aplicarMax() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -1012,7 +1010,7 @@ function aplicarRoberts() {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const saida = ctxFiltrado.createImageData(width, height);
@@ -1059,7 +1057,7 @@ function aplicarRoberts() {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -1087,7 +1085,7 @@ function aplicarPrewittSobel(tipo) {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const saida = ctxFiltrado.createImageData(width, height);
@@ -1133,7 +1131,7 @@ function aplicarPrewittSobel(tipo) {
           const lum = calcularLuminancia(
             data[idxVizinho],
             data[idxVizinho + 1],
-            data[idxVizinho + 2],
+            data[idxVizinho + 2]
           );
 
           let pesoX = kernelX[ky + 1][kx + 1];
@@ -1165,7 +1163,7 @@ function aplicarPrewittSobel(tipo) {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
 
@@ -1194,7 +1192,7 @@ function aplicarPassaAltaBasicoEAltoReforco(A = 0) {
     histogramaOriginal,
     ctxGraficoOrig,
     canvasGraficoOrig.width,
-    canvasGraficoOrig.height,
+    canvasGraficoOrig.height
   );
 
   const kernel = [
@@ -1239,9 +1237,90 @@ function aplicarPassaAltaBasicoEAltoReforco(A = 0) {
     histogramaFiltrado,
     ctxGraficoFilt,
     canvasGraficoFilt.width,
-    canvasGraficoFilt.height,
+    canvasGraficoFilt.height
   );
 }
+
+function aplicarOtsu() {
+  const { imageData, data } = obterPixels();
+
+  document.getElementById("graficoOriginal").style.display = "block";
+  let histogramaOriginal = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaOriginal,
+    ctxGraficoOrig,
+    canvasGraficoOrig.width,
+    canvasGraficoOrig.height
+  );
+
+  transformaremCiza(data);
+
+  let histogramaCinza = gerarVetorHistograma(data);
+  let totalPixels = data.length / 4;
+
+  let somaTotal = 0;
+  for (let i = 0; i < 256; i++) {
+    somaTotal += i * histogramaCinza[i];
+  }
+
+  let somaF = 0; //soma fundo
+  let pesoF = 0; //peso fundo
+  let pesoO = 0; //peso objeto
+
+  let varMax = 0; //variancia maxima
+  let limiar = 0;
+
+  for (let t = 0; t < 256; t++) {
+    pesoF += histogramaCinza[t];
+    if (pesoF === 0) continue; //vai ignorar se ainda nao houver pixels escuros
+
+    pesoO = totalPixels - pesoF;
+    if (pesoO === 0) break;
+
+    somaF += t * histogramaCinza[t];
+
+    let mediaF = somaF / pesoF;
+    let mediaO = (somaTotal - somaF) / pesoO;
+
+    let varianciaEntreClasses =
+      pesoF * pesoO * (mediaF - mediaO) * (mediaF - mediaO);
+
+    if (varianciaEntreClasses > varMax) {
+      varMax = varianciaEntreClasses;
+      limiar = t;
+    }
+  }
+
+  console.log("Limiar escolhido:", limiar);
+  if(limiar > 0) {
+    console.log("limiar positivo");
+  }
+
+  for (let i = 0; i < data.length; i += 4) {
+    let cor = data[i] >= limiar ? 255 : 0;
+
+    data[i] = cor;
+    data[i + 1] = cor;
+    data[i + 2] = cor;
+  }
+
+  ctxFiltrado.putImageData(imageData, 0, 0);
+
+  document.getElementById("graficoFiltrado").style.display = "block";
+  let histogramaFiltrado = gerarVetorHistograma(data);
+  desenharGrafico(
+    histogramaFiltrado,
+    ctxGraficoFilt,
+    canvasGraficoFilt.width,
+    canvasGraficoFilt.height
+  );
+}
+
+otsu.addEventListener("click", () => {
+  esconderControles();
+
+  aplicarOtsu();
+})
 
 btndownload.addEventListener("click", () => {
   const linkTemporario = document.createElement("a");
